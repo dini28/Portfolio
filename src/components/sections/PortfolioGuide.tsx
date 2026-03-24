@@ -118,7 +118,7 @@ const PortfolioGuide = () => {
 
         const isMobile = window.innerWidth < 768;
         const margin = isMobile ? 16 : 40;
-        const iconSize = isMobile ? 56 : 80; // 14rem (56px) vs 20rem (80px)
+        const iconSize = isMobile ? 40 : 56; // 10rem (40px) vs 14rem (56px)
 
         const isLeft = index % 2 === 0;
         const x = isLeft ? margin : window.innerWidth - iconSize - margin;
@@ -349,28 +349,28 @@ const PortfolioGuide = () => {
                     <div className="absolute inset-0 bg-white rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-all duration-500" />
 
                     <div
-                        className={`relative w-14 h-14 md:w-20 md:h-20 bg-black rounded-full border-2 border-white shadow-2xl flex items-center justify-center transition-all duration-300 ${isIdle ? 'scale-95' : 'group-hover:scale-110'
+                        className={`relative w-10 h-10 md:w-14 md:h-14 bg-black rounded-full border-2 border-white shadow-2xl flex items-center justify-center transition-all duration-300 ${isIdle ? 'scale-95' : 'group-hover:scale-110'
                             } group-active:scale-95`}>
                         <CharacterIcon
-                            className={`w-6 h-6 md:w-9 md:h-9 text-white transition-transform duration-300 ${isIdle ? 'animate-pulse' : ''
+                            className={`w-4 h-4 md:w-6 md:h-6 text-white transition-transform duration-300 ${isIdle ? 'animate-pulse' : ''
                                 }`}
                             strokeWidth={2}
                         />
 
                         <div className="absolute inset-0 rounded-full border border-white/30 animate-ping opacity-20" />
 
-                        <div className="absolute -top-1 -right-1 w-5 h-5 md:w-7 md:h-7 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:rotate-180 transition-transform duration-500 border-2 border-black">
-                            <Info className="w-3 h-3 md:w-4 md:h-4 text-black" strokeWidth={2.5} />
+                        <div className="absolute -top-1 -right-1 w-4 h-4 md:w-5 md:h-5 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:rotate-180 transition-transform duration-500 border-2 border-black">
+                            <Info className="w-2.5 h-2.5 md:w-3 md:h-3 text-black" strokeWidth={2.5} />
                         </div>
 
                         {totalClicks > 0 && (
-                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white text-black rounded-full flex items-center justify-center text-xs font-bold shadow-lg border-2 border-black group-hover:scale-110 transition-transform">
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-white text-black rounded-full flex items-center justify-center text-[10px] font-bold shadow-lg border-2 border-black group-hover:scale-110 transition-transform">
                                 {totalClicks}
                             </div>
                         )}
                     </div>
 
-                    <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-white text-black text-xs px-4 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none shadow-xl border border-black/10 font-medium hidden md:block">
+                    <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none shadow-xl border border-black/10 font-medium hidden md:block">
                         <Mouse className="inline w-3 h-3 mr-1.5" />
                         Click for insights
                         <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white border-t border-l border-black/10 rotate-45" />
@@ -383,9 +383,9 @@ const PortfolioGuide = () => {
                     <div className="flex items-center gap-3">
                         <Star className="w-5 h-5 text-white" strokeWidth={2} />
                         <div>
-                            <div className="text-xs font-semibold tracking-wide">Discovery Progress</div>
-                            <div className="flex items-center gap-2 mt-1.5">
-                                <div className="w-28 h-1.5 bg-white/10 rounded-full overflow-hidden border border-white/10">
+                            <div className="text-[10px] font-semibold tracking-wide">Discovery Progress</div>
+                            <div className="flex items-center gap-2 mt-1">
+                                <div className="w-20 h-1 bg-white/10 rounded-full overflow-hidden border border-white/10">
                                     <div
                                         className="h-full bg-white transition-all duration-700"
                                         style={{ width: `${progressPercent}%` }}
@@ -402,12 +402,12 @@ const PortfolioGuide = () => {
                 <div
                     className="fixed z-50 transition-all duration-500 animate-in fade-in slide-in-from-left-4"
                     style={{
-                        left: `${Math.min(position.x + 100, window.innerWidth - 380)}px`,
+                        left: `${Math.min(position.x + 80, window.innerWidth - 300)}px`,
                         top: `${position.y}vh`,
-                        maxWidth: '360px',
+                        maxWidth: '280px',
                     }}
                 >
-                    <div className="relative bg-black text-white rounded-xl p-5 shadow-2xl border border-white/30">
+                    <div className="relative bg-black text-white rounded-xl p-3 shadow-2xl border border-white/30">
                         <div className="absolute left-0 top-10 -translate-x-3 w-6 h-6 bg-black border-l border-b border-white/30 rotate-45" />
 
                         <button
@@ -431,7 +431,7 @@ const PortfolioGuide = () => {
                             </span>
                         </div>
 
-                        <p className="text-sm leading-relaxed text-white/90">{currentFact}</p>
+                        <p className="text-xs leading-relaxed text-white/90">{currentFact}</p>
 
                         <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
                             <span className="text-white/60 flex items-center gap-1.5 font-medium">
@@ -448,7 +448,7 @@ const PortfolioGuide = () => {
 
             {!currentFact && showWelcome && (
                 <div
-                    className="fixed bottom-8 right-8 z-40 bg-black text-white rounded-xl p-6 shadow-2xl border border-white/30 max-w-md animate-in fade-in slide-in-from-bottom-6"
+                    className="fixed bottom-8 right-8 z-40 bg-black text-white rounded-xl p-4 shadow-2xl border border-white/30 max-w-sm animate-in fade-in slide-in-from-bottom-6"
                     style={{ animationDelay: '1s', animationDuration: '0.6s' }}
                 >
                     <button
@@ -459,19 +459,19 @@ const PortfolioGuide = () => {
                         <X className="w-4 h-4" strokeWidth={2.5} />
                     </button>
 
-                    <div className="flex items-start gap-4">
-                        <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shrink-0 shadow-lg border-2 border-black">
-                            <Info className="w-7 h-7 text-black" strokeWidth={2} />
+                    <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shrink-0 shadow-lg border-2 border-black">
+                            <Info className="w-5 h-5 text-black" strokeWidth={2} />
                         </div>
                         <div>
-                            <h4 className="font-bold mb-2 text-lg flex items-center gap-2">
+                            <h4 className="font-bold mb-1 text-base flex items-center gap-2">
                                 Interactive Portfolio Guide
                                 <Sparkles className="w-4 h-4" strokeWidth={2} />
                             </h4>
-                            <p className="text-sm text-white/80 leading-relaxed mb-3">
+                            <p className="text-xs text-white/80 leading-relaxed mb-2">
                                 I'll move around as you explore. Click me to discover:
                             </p>
-                            <ul className="text-xs text-white/70 space-y-2">
+                            <ul className="text-[10px] text-white/70 space-y-1.5">
                                 <li className="flex items-center gap-2">
                                     <Award className="w-3.5 h-3.5" strokeWidth={2} />
                                     Dipesh's achievements & qualifications
