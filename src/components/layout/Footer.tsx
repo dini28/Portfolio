@@ -1,21 +1,9 @@
-import { Github, Linkedin, Mail, Code2, User, Terminal } from 'lucide-react';
 import logo from '../../assets/logo.svg';
+import SectionBackground from '../common/SectionBackground';
+import { SOCIAL_LINKS, FOOTER_LINKS } from '../../data/social';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
-
-    const footerLinks = [
-        { icon: <User className="w-4 h-4" />, label: 'About', href: '#about' },
-        { icon: <Code2 className="w-4 h-4" />, label: 'Skills', href: '#skills' },
-        { icon: <Terminal className="w-4 h-4" />, label: 'Projects', href: '#projects' },
-        { icon: <Mail className="w-4 h-4" />, label: 'Contact', href: '#contact' },
-    ];
-
-    const socialLinks = [
-        { icon: <Github className="w-5 h-5" />, label: 'GitHub', href: 'https://github.com/dini28' },
-        { icon: <Linkedin className="w-5 h-5" />, label: 'LinkedIn', href: 'https://www.linkedin.com/in/dipesh-soni/' },
-        { icon: <Mail className="w-5 h-5" />, label: 'Email', href: 'mailto:dipeshsonitech@gmail.com' },
-    ];
 
     const scrollToSection = (href: string) => {
         if (href.startsWith('#')) {
@@ -28,15 +16,7 @@ const Footer = () => {
 
     return (
         <footer className="bg-black text-white py-12 sm:py-16 relative overflow-hidden">
-            {/* Background Elements */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute inset-0 opacity-[0.02]" style={{
-                    backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-                    backgroundSize: '50px 50px'
-                }} />
-                <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/3 rounded-full blur-3xl" />
-            </div>
+            <SectionBackground variant="subtle" />
 
             <div className="container mx-auto px-6 sm:px-8 lg:px-12 xl:px-20 relative z-10">
                 {/* Footer Top */}
@@ -73,29 +53,17 @@ const Footer = () => {
                     <div>
                         <h4 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-white">Navigation</h4>
                         <ul className="space-y-2 sm:space-y-3">
-                            {footerLinks.map((link) => (
+                            {FOOTER_LINKS.map((link) => (
                                 <li key={link.label}>
-                                    {link.href.startsWith('#') ? (
-                                        <button
-                                            onClick={() => scrollToSection(link.href)}
-                                            className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base text-gray-400 hover:text-white transition-colors group cursor-pointer"
-                                        >
-                                            <span className="group-hover:scale-110 transition-transform">
-                                                {link.icon}
-                                            </span>
-                                            {link.label}
-                                        </button>
-                                    ) : (
-                                        <a
-                                            href={link.href}
-                                            className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base text-gray-400 hover:text-white transition-colors group"
-                                        >
-                                            <span className="group-hover:scale-110 transition-transform">
-                                                {link.icon}
-                                            </span>
-                                            {link.label}
-                                        </a>
-                                    )}
+                                    <button
+                                        onClick={() => scrollToSection(link.href)}
+                                        className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base text-gray-400 hover:text-white transition-colors group cursor-pointer"
+                                    >
+                                        <span className="group-hover:scale-110 transition-transform">
+                                            <link.icon className="w-4 h-4" />
+                                        </span>
+                                        {link.label}
+                                    </button>
                                 </li>
                             ))}
                         </ul>
@@ -105,7 +73,7 @@ const Footer = () => {
                     <div>
                         <h4 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-white">Connect</h4>
                         <ul className="space-y-2 sm:space-y-3">
-                            {socialLinks.map((link) => (
+                            {SOCIAL_LINKS.map((link) => (
                                 <li key={link.label}>
                                     <a
                                         href={link.href}
@@ -114,7 +82,7 @@ const Footer = () => {
                                         className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base text-gray-400 hover:text-white transition-colors group"
                                     >
                                         <span className="group-hover:scale-110 transition-transform">
-                                            {link.icon}
+                                            <link.icon className="w-5 h-5" />
                                         </span>
                                         {link.label}
                                     </a>

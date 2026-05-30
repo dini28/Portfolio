@@ -3,74 +3,20 @@ import { ExternalLink, Github, ArrowUpRight, X, Lightbulb, Target, Rocket as Roc
 import { Card, CardContent } from '../common/Card';
 import { Button } from '../common/Button';
 import { useScrollReveal, useStaggerReveal } from '../../hooks/useScrollReveal';
+import SectionBackground from '../common/SectionBackground';
+import { PROJECTS_DATA } from '../../data/projects';
 
-import digital_marketing from '../../assets/pixelwings.webp';
-import fictiongames from '../../assets/fictiongames.png';
-import ghummakkad from '../../assets/ghummakkad.webp';
 
-const PROJECTS_DATA = [
-    {
-        title: 'PixelWings',
-        subtitle: 'Service Based Platform',
-        description: 'A full-stack React application with modern architecture, featuring state management, responsive design, and seamless user experience.',
-        image: digital_marketing,
-        technologies: ['React', 'TypeScript', 'Tailwind CSS'],
-        liveUrl: 'https://pixelwingstrust.vercel.app/',
-        githubUrl: 'https://github.com/dini28/pixelwings',
-        caseStudy: {
-            problem: "Small businesses struggled to manage their digital presence effectively using complex traditional tools.",
-            solution: "Developed a streamlined, design-first platform that simplifies pixel-perfect deployments.",
-            impact: "Enabled businesses to launch their storefronts with faster loading times and zero configuration overhead."
-        }
-    },
-    {
-        title: 'Fiction Games',
-        subtitle: 'Next-Gen Web Gaming',
-        status: 'Currently developing',
-        description: 'Bold gaming experiences where every click writes a new story. Built with React and JavaScript, deployed on Vercel for seamless performance.',
-        image: fictiongames,
-        technologies: ['React', 'JavaScript', 'GSAP', 'Vercel', 'Lenis', 'Lottie'],
-        liveUrl: 'https://fictiongames.vercel.app',
-        githubUrl: 'https://github.com/dini28/fiction',
-        caseStudy: {
-            problem: "Most studio websites feel static, templated, and fail to capture the energy of modern games.",
-            solution: "A high-performance showcase platform built with React and GSAP enabling fluid transitions, animated world reveals, and story-driven navigation.",
-            impact: "Studios can present their games with native-like fluidity, maintaining 60fps performance on mobile while delivering immersive, cinematic experiences."
-        }
-    },
-    {
-        title: 'Ghummakkad',
-        subtitle: 'Hotel Booking Engine',
-        status: 'Currently developing on Next.js',
-        description: 'A high-performance hotel booking platform reconstructed with Next.js App Router. Featuring SEO optimization, server-side rendering for lightning-fast speeds, and secure payment integrations.',
-        image: ghummakkad,
-        technologies: ['HTML5', 'CSS3', 'JavaScript', 'MongoDB', 'Firebase'],
-        liveUrl: '',
-        githubUrl: 'https://github.com/dini28/Ghummakkad',
-        caseStudy: {
-            problem: "The tourism platform struggled with poor search visibility and slow load times, limiting discoverability for hotels and experiences across Rajasthan.",
-            solution: "Rebuilt the platform using Next.js 14+, leveraging Server Components for fast, SEO-optimized content delivery and Server Actions to power secure, seamless hotel booking workflows.",
-            impact: "The platform will achieve near-perfect Lighthouse scores, stronger organic visibility for Rajasthan tourism searches, and a 50% reduction in time-to-interactive, driving faster bookings and higher engagement."
-        }
-    },
-];
 
 const Project = () => {
     const { ref: sectionRef, isVisible } = useScrollReveal({ threshold: 0.1 });
     const { containerRef, visibleItems } = useStaggerReveal<HTMLDivElement>(PROJECTS_DATA.length, { staggerDelay: 200 });
-    const [selectedProject, setSelectedProject] = useState<typeof PROJECTS_DATA[0] | null>(null);
+    const [selectedProject, setSelectedProject] = useState<(typeof PROJECTS_DATA)[number] | null>(null);
 
     return (
         <section ref={sectionRef} id="projects" className="py-20 bg-black relative overflow-hidden">
             {/* Background */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute inset-0 opacity-[0.02]" style={{
-                    backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-                    backgroundSize: '50px 50px'
-                }} />
-                <div className="absolute top-20 right-20 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-20 left-20 w-96 h-96 bg-white/3 rounded-full blur-3xl" />
-            </div>
+            <SectionBackground />
 
             <div className="container mx-auto px-6 sm:px-8 lg:px-12 xl:px-20 relative z-10">
                 {/* Header */}
@@ -95,7 +41,8 @@ const Project = () => {
                                     <img
                                         src={project.image}
                                         alt={project.title}
-                                        className="w-full h-full object-fit group-hover:scale-110 transition-transform duration-700"
+                                        loading="lazy"
+                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60" />
 

@@ -1,27 +1,11 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Github, Linkedin, Mail, ArrowRight, Code2, Laptop } from 'lucide-react';
+import { ArrowRight, Code2, Laptop, Mail } from 'lucide-react';
 import { Button } from '../common/Button';
 import dipesh from '../../assets/dipesh.webp';
+import { SOCIAL_LINKS } from '../../data/social';
 
-// animations
-const animation = `
-  @keyframes grid-move {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(50px); }
-  }
-
-  @keyframes shimmer {
-    0% { background-position: -1000px 0; }
-    100% { background-position: 1000px 0; }
-  }
-
-  .mouse-glow {
-    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
-    transform: translate(-50%, -50%);
-    left: var(--mouse-x, 50%);
-    top: var(--mouse-y, 50%);
-  }
-`;
+// Hero-specific social links (GitHub + LinkedIn only)
+const heroSocials = SOCIAL_LINKS.filter(s => s.label !== 'Email');
 
 const Hero = () => {
     const [textState, setTextState] = useState({
@@ -33,7 +17,7 @@ const Hero = () => {
     const [isVisible, setIsVisible] = useState(false);
     const heroRef = useRef<HTMLElement>(null);
 
-    const roles = useMemo(() => ['Frontend Developer', 'React Enthusiast', 'UI/UX Learner', 'Web Developer'], []);
+    const roles = useMemo(() => ['Frontend Developer', 'React Enthusiast', 'UI/UX Designer', 'Web Developer'], []);
 
     // spotlight effect
     useEffect(() => {
@@ -103,7 +87,7 @@ const Hero = () => {
             id="hero"
             className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black py-12 lg:py-0"
         >
-            <style>{animation}</style>
+
 
             {/* Background Elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -181,12 +165,9 @@ const Hero = () => {
                         <div className="flex items-center justify-center lg:justify-start gap-6">
                             <span className="text-xs uppercase tracking-[0.2em] text-gray-500 font-semibold">Connect</span>
                             <div className="h-px w-8 bg-white/10" />
-                            {[
-                                { icon: Github, href: 'https://github.com/dini28', label: 'GitHub' },
-                                { icon: Linkedin, href: 'https://linkedin.com/in/dipesh-soni', label: 'LinkedIn' }
-                            ].map((social, i) => (
+                            {heroSocials.map((social) => (
                                 <a
-                                    key={i}
+                                    key={social.label}
                                     href={social.href}
                                     target="_blank"
                                     rel="noreferrer"
@@ -243,7 +224,7 @@ const Hero = () => {
                             <div className="absolute -bottom-3 -left-3 w-20 h-20 border-b-2 border-l-2 border-white/20 rounded-bl-3xl" />
 
                             {/* Floating Stats */}
-                            <FloatingCard position="-bottom-6 -left-6" label="Status" value="Fresher" delay={0} />
+                            <FloatingCard position="-bottom-6 -left-6" label="Status" value="Open to Work" delay={0} />
                             <FloatingCard position="-top-6 -right-6" label="Projects" value="5+" delay={100} />
                         </div>
                     </div>

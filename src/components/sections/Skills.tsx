@@ -2,69 +2,26 @@ import { useState } from 'react';
 import { Code2, Database, Wrench, X } from 'lucide-react';
 import { Card, CardContent } from '../common/Card';
 import { useScrollReveal, useStaggerReveal } from '../../hooks/useScrollReveal';
+import SectionBackground from '../common/SectionBackground';
+import { SKILL_CATEGORIES, getSkillLevel } from '../../data/skills';
 
-const SKILL_CATEGORIES = [
-    {
-        title: 'Database & Cloud',
-        icon: <Database className="w-8 h-8" />,
-        skills: [
-            { name: 'MongoDB', proficiency: 65, projects: ['Ghummakkad'] },
-            { name: 'Firebase', proficiency: 65, projects: ['Portfolio'] },
-            { name: 'Netlify', proficiency: 60, projects: ['All Projects'] },
-            { name: 'Vercel', proficiency: 80, projects: ['Fiction Games'] },
-            { name: 'AWS', proficiency: 30 }
-        ]
-    },
-    {
-        title: 'Development',
-        icon: <Code2 className="w-8 h-8" />,
-        skills: [
-            { name: 'React.js', proficiency: 75, projects: ['Ghummakkad', 'Portfolio'] },
-            { name: 'Next.js', proficiency: 45, projects: ['Ghummakkad', 'Coming Soon'] },
-            { name: 'TypeScript', proficiency: 50, projects: ['Portfolio'] },
-            { name: 'Tailwind', proficiency: 80, projects: ['All Modern Apps'] },
-            { name: 'shadcn/ui', proficiency: 70, projects: [''] },
-            { name: 'JavaScript', proficiency: 75, projects: ['All Projects'] },
-            { name: 'HTML5 & CSS3', proficiency: 95, projects: ['Base Foundations'] },
-            { name: 'Express.js', proficiency: 55, projects: ['Working on'] },
-            { name: 'Node.js', proficiency: 65, projects: ['Server Logic'] }
-        ]
-    },
-    {
-        title: 'Tools & Platforms',
-        icon: <Wrench className="w-8 h-8" />,
-        skills: [
-            { name: 'Git', proficiency: 55, projects: ['Version Control'] },
-            { name: 'Docker', proficiency: 45, projects: ['Learning'] },
-            { name: 'RedHat Linux', proficiency: 65, projects: ['Learning'] },
-            { name: 'Postman', proficiency: 75, projects: ['Learning'] },
-            { name: 'VS Code', proficiency: 95, projects: ['My Primary IDE'] }
-        ]
-    }
-];
+
+const SKILL_ICON_MAP = { Database, Code2, Wrench } as const;
 
 const Skills = () => {
     const { ref: sectionRef, isVisible } = useScrollReveal({ threshold: 0.2 });
     const { containerRef, visibleItems } = useStaggerReveal<HTMLDivElement>(SKILL_CATEGORIES.length, { staggerDelay: 150 });
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-    const getLevel = (proficiency: number) => {
-        if (proficiency >= 85) return 'Advanced';
-        if (proficiency >= 70) return 'Intermediate';
-        return 'Learning';
+    const getIcon = (iconName: string) => {
+        const IconComp = SKILL_ICON_MAP[iconName as keyof typeof SKILL_ICON_MAP];
+        return IconComp ? <IconComp className="w-8 h-8" /> : null;
     };
 
     return (
-        <section ref={sectionRef} id="skills" className="py-20 bg-black relative overflow-hidden">
+        <section ref={sectionRef} id="skills" className="py-20 bg-neutral-950 relative overflow-hidden">
             {/* Background */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute inset-0 opacity-[0.02]" style={{
-                    backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-                    backgroundSize: '50px 50px'
-                }} />
-                <div className="absolute top-20 right-20 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
-                <div className="absolute bottom-20 left-20 w-96 h-96 bg-white/3 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }} />
-            </div>
+            <SectionBackground variant="subtle" animated />
 
             <div className="container mx-auto px-6 sm:px-8 lg:px-12 xl:px-20 relative z-10">
                 {/* Header */}
@@ -91,7 +48,7 @@ const Skills = () => {
                                 <CardContent className="p-8">
                                     <div className="text-center mb-6">
                                         <div className="w-16 h-16 bg-gradient-to-br from-white to-gray-400 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                                            {category.icon}
+                                            {getIcon(category.iconName)}
                                         </div>
                                         <h3 className="text-xl font-bold text-white mb-2">{category.title}</h3>
                                         <div className="h-0.5 w-12 mx-auto bg-white/50 rounded-full" />
@@ -134,7 +91,7 @@ const Skills = () => {
                         <div className="flex items-center justify-between p-6 border-b border-white/10">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-br from-white to-gray-400 rounded-lg flex items-center justify-center">
-                                    {SKILL_CATEGORIES[activeIndex].icon}
+                                    {getIcon(SKILL_CATEGORIES[activeIndex].iconName)}
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold text-white">{SKILL_CATEGORIES[activeIndex].title}</h3>
@@ -154,7 +111,7 @@ const Skills = () => {
                                         <span className="text-sm font-medium text-white">{skill.name}</span>
                                         <div className="flex items-center gap-2">
                                             <span className="text-xs font-bold px-2 py-1 rounded-full bg-white text-black">
-                                                {getLevel(skill.proficiency)}
+                                                {getSkillLevel(skill.proficiency)}
                                             </span>
                                             <span className="text-sm font-bold text-white">{skill.proficiency}%</span>
                                         </div>
@@ -182,14 +139,6 @@ const Skills = () => {
                 </div>
             )}
 
-            <style>
-                {`
-                    @keyframes fadeIn {
-                        from { opacity: 0; transform: translateY(10px); }
-                        to { opacity: 1; transform: translateY(0); }
-                    }
-                `}
-            </style>
         </section>
     );
 };

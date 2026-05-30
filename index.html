@@ -5,25 +5,44 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="/src/style.css" rel="stylesheet">
+  <meta name="theme-color" content="#000000" />
 
+  <!-- SEO Meta Tags -->
+  <meta name="description"
+    content="Dipesh Soni — Frontend Developer specializing in React, TypeScript, and modern web technologies. View my projects, skills, and get in touch." />
+  <meta name="author" content="Dipesh Soni" />
+  <meta name="keywords" content="Dipesh Soni, Frontend Developer, React, TypeScript, Portfolio, Web Developer" />
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Dipesh Soni | Frontend Developer" />
+  <meta property="og:description"
+    content="Frontend Developer specializing in React, TypeScript, and modern web technologies. View my projects, skills, and get in touch." />
+  <meta property="og:image" content="/preview.png" />
+  <meta property="og:site_name" content="Dipesh Soni Portfolio" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Dipesh Soni | Frontend Developer" />
+  <meta name="twitter:description"
+    content="Frontend Developer specializing in React, TypeScript, and modern web technologies." />
+  <meta name="twitter:image" content="/preview.png" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Genos:ital,wght@0,100..900;1,100..900&family=Offside&display=swap"
     rel="stylesheet">
 
-  <title>Dipesh Soni</title>
+  <link href="/src/style.css" rel="stylesheet">
+
+  <title>Dipesh Soni | Frontend Developer</title>
 </head>
 
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div id="root"></div>
-  <form name="contact" netlify netlify-honeypot="bot-field" hidden>
-    <input type="text" name="name" />
-    <input type="email" name="email" />
-    <input type="text" name="subject" />
-    <textarea name="message"></textarea>
-  </form>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 

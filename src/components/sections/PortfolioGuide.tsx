@@ -75,16 +75,16 @@ const PortfolioGuide = () => {
         projects: [
             "Ghummakkad: A travel platform with 15+ properties across 9 Rajasthan destinations - real data integration.",
 
-            "AI Art Generator: Uses Stability AI's API to generate images from text prompts - modern AI implementation.",
+            "Fiction Games: A high-performance gaming showcase built with React and GSAP for cinematic web experiences.",
 
-            "Expense Tracker: Features real-time budget monitoring with visual charts using Chart.js library.",
+            "PixelWings: A service-based platform simplifying digital presence for small businesses.",
 
-            "All projects are production-ready, deployed on Vercel/Render, and include GitHub source code.",
+            "All projects are production-ready, deployed on Vercel, and include GitHub source code.",
 
             "Each project demonstrates real-world problem-solving from concept to deployment."
         ],
         contact: [
-            "Email: dipeshrathod2706@gmail.com - Professional inquiries welcome.",
+            "Email: dipeshsonitech@gmail.com - Professional inquiries welcome.",
             "LinkedIn & GitHub: Active profiles with projects, contributions, and professional network.",
             "The contact form includes client-side validation using HTML5 form attributes and JavaScript.",
             "Response time: Typically 24-48 hours for collaboration and job opportunities."
@@ -293,30 +293,18 @@ const PortfolioGuide = () => {
 
     useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {
-            if (e.key === 'i' || e.key === 'I') {
+        if (e.key === 'i' || e.key === 'I') {
                 showRandomFact();
             } else if (e.key === 'Escape') {
                 setCurrentFact(null);
             } else if (e.key === 'm' || e.key === 'M') {
                 updatePosition();
-            } else if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-                e.preventDefault();
-                // Secret achievement trigger: Ctrl + S
-                if (!achievements.find(a => a.id === 'easter_egg')) {
-                    const easterEgg = achievementsList.find(a => a.id === 'easter_egg');
-                    if (easterEgg) {
-                        setAchievements(prev => [...prev, easterEgg]);
-                        setLatestAchievement(easterEgg);
-                        setCharacterMood('sparkles');
-                        setCurrentFact("Wow! You found the secret shortcut! I've unlocked a hidden achievement for you. Keep exploring!");
-                    }
-                }
             }
         };
 
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [showRandomFact, updatePosition, achievements, achievementsList]);
+    }, [showRandomFact, updatePosition]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -344,7 +332,7 @@ const PortfolioGuide = () => {
                 <div
                     className="relative group cursor-pointer"
                     onClick={showRandomFact}
-                    onKeyPress={(e) => e.key === 'Enter' && showRandomFact()}
+                    onKeyDown={(e) => e.key === 'Enter' && showRandomFact()}
                 >
                     <div className="absolute inset-0 bg-white rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-all duration-500" />
 
@@ -517,60 +505,6 @@ const PortfolioGuide = () => {
                 </div>
             )}
 
-            {/* ============ CUSTOM ANIMATIONS ============ */}
-            <style>
-                {`
-                    @keyframes fade-in {
-                        from { opacity: 0; }
-                        to { opacity: 1; }
-                    }
-
-                    @keyframes slide-in-from-bottom-6 {
-                        from { transform: translateY(1.5rem); opacity: 0; }
-                        to { transform: translateY(0); opacity: 1; }
-                    }
-
-                    @keyframes slide-in-from-top-4 {
-                        from { transform: translateY(-1rem); opacity: 0; }
-                        to { transform: translateY(0); opacity: 1; }
-                    }
-
-                    @keyframes slide-in-from-left-4 {
-                        from { transform: translateX(-1rem); opacity: 0; }
-                        to { transform: translateX(0); opacity: 1; }
-                    }
-
-                    @keyframes slide-in-from-right-6 {
-                        from { transform: translateX(1.5rem); opacity: 0; }
-                        to { transform: translateX(0); opacity: 1; }
-                    }
-
-                    .animate-in {
-                        animation: fade-in 0.4s ease-out;
-                    }
-
-                    /* Responsive adjustments */
-                    @media (max-width: 640px) {
-                        .fixed.bottom-8.right-8 {
-                            bottom: 1rem;
-                            right: 1rem;
-                            max-width: calc(100vw - 2rem);
-                        }
-                    }
-
-                    /* Accessibility - professional focus state */
-                    [role="button"]:focus-visible {
-                        outline: 2px solid #fff;
-                        outline-offset: 4px;
-                    }
-
-                    /* Performance optimization */
-                    * {
-                        backface-visibility: hidden;
-                        -webkit-font-smoothing: antialiased;
-                    }
-                `}
-            </style>
         </>
     );
 };

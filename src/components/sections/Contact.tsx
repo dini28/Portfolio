@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { Mail, Linkedin, Phone, MapPin, CheckCircle, AlertCircle, Copy, Check } from 'lucide-react';
 import { Card, CardContent } from '../common/Card';
 import { Button } from '../common/Button';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
+import SectionBackground from '../common/SectionBackground';
+import { CONTACT_INFO } from '../../data/social';
 
 const Contact = () => {
-    const [isVisible] = useState(true);
+    const { ref: sectionRef, isVisible } = useScrollReveal({ threshold: 0.1 });
     const [formErrors, setFormErrors] = useState<{
         name?: string;
         email?: string;
@@ -17,7 +20,7 @@ const Contact = () => {
     const [submitError, setSubmitError] = useState(false);
 
     const copyEmail = () => {
-        navigator.clipboard.writeText('dipeshsonitech@gmail.com');
+        navigator.clipboard.writeText(CONTACT_INFO.email);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
@@ -95,16 +98,9 @@ const Contact = () => {
     };
 
     return (
-        <section id="contact" className="py-20 bg-black relative overflow-hidden">
+        <section ref={sectionRef} id="contact" className="py-20 bg-neutral-950 relative overflow-hidden">
             {/* Background */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute inset-0 opacity-[0.02]" style={{
-                    backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-                    backgroundSize: '50px 50px'
-                }} />
-                <div className="absolute top-20 left-20 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
-                <div className="absolute bottom-20 right-20 w-96 h-96 bg-white/3 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }} />
-            </div>
+            <SectionBackground variant="subtle" animated />
 
             <div className="container mx-auto px-6 sm:px-8 lg:px-12 xl:px-20 relative z-10">
                 {/* Header */}
@@ -137,8 +133,8 @@ const Contact = () => {
                                                 {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                                             </button>
                                         </div>
-                                        <a href="mailto:dipeshsonitech@gmail.com" className="text-white font-medium hover:text-gray-300 transition-colors block px-7">
-                                            dipeshsonitech@gmail.com
+                                        <a href={`mailto:${CONTACT_INFO.email}`} className="text-white font-medium hover:text-gray-300 transition-colors block px-7">
+                                            {CONTACT_INFO.email}
                                         </a>
                                     </div>
 
@@ -148,15 +144,15 @@ const Contact = () => {
                                             <MapPin className="w-5 h-5 text-gray-400 mr-2" />
                                             <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Current Location</span>
                                         </div>
-                                        <p className="text-white font-medium px-7">Udaipur, Rajasthan, India</p>
+                                        <p className="text-white font-medium px-7">{CONTACT_INFO.location}</p>
                                     </div>
 
                                     {/* Quick Contact */}
                                     <div className="grid grid-cols-2 gap-3 pt-2">
-                                        <a href="tel:+916377796008" className="flex items-center justify-center gap-2 p-3 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-400 hover:bg-white hover:text-black transition-all">
+                                        <a href={`tel:${CONTACT_INFO.phone}`} className="flex items-center justify-center gap-2 p-3 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-400 hover:bg-white hover:text-black transition-all">
                                             <Phone className="w-4 h-4" /> Call Me
                                         </a>
-                                        <a href="https://linkedin.com/in/dipesh-soni" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 p-3 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-400 hover:bg-white hover:text-black transition-all">
+                                        <a href={CONTACT_INFO.linkedIn} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 p-3 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-400 hover:bg-white hover:text-black transition-all">
                                             <Linkedin className="w-4 h-4" /> LinkedIn
                                         </a>
                                     </div>

@@ -13,11 +13,13 @@ function App() {
   return (
     <SmoothScroll>
       <Header />
-      <Hero />
-      <About />
-      <Skills />
-      <Project />
-      <Contact />
+      <main id="main-content">
+        <Hero />
+        <About />
+        <Skills />
+        <Project />
+        <Contact />
+      </main>
       <Footer />
       <PortfolioGuide />
       <WhatsAppButton />
@@ -26,3 +28,4 @@ function App() {
 }
 
 export default App
+

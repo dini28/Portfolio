@@ -1,6 +1,7 @@
 import { GraduationCap, Code2, Rocket, Award, BookOpen } from 'lucide-react';
 import { Card, CardContent } from '../common/Card';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
+import SectionBackground from '../common/SectionBackground';
 import about from '../../assets/about.webp';
 
 const About = () => {
@@ -15,28 +16,7 @@ const About = () => {
             id="about"
             className="py-20 bg-black relative overflow-hidden"
         >
-            {/* --- Background Atmosphere --- */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {/* Fine Grid Texture */}
-                <div
-                    className="absolute inset-0 opacity-[0.02]"
-                    style={{
-                        backgroundImage: `
-                            linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-                        `,
-                        backgroundSize: '50px 50px'
-                    }}
-                />
-
-                {/* Ambient Gradient Blobs */}
-                <div className="absolute top-20 right-20 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
-                <div className="absolute bottom-20 left-20 w-96 h-96 bg-white/3 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }} />
-
-                {/* Corner Highlights */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-white/5 to-transparent rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-white/5 to-transparent rounded-full blur-3xl" />
-            </div>
+            <SectionBackground animated />
 
             <div className="container mx-auto px-6 sm:px-8 lg:px-12 xl:px-20 relative z-10">
                 {/* --- Header --- */}
@@ -66,6 +46,7 @@ const About = () => {
                                     <img
                                         src={about}
                                         alt="Dipesh Soni - Frontend Developer"
+                                        loading="lazy"
                                         className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105 grayscale"
                                     />
                                     {/* Gradient Overlay */}
@@ -114,17 +95,17 @@ const About = () => {
                         <div className="space-y-5">
                             <div className="flex items-center gap-3 mb-4">
                                 <BookOpen className="w-6 h-6 text-white" />
-                                <h3 className="text-2xl font-bold text-white">Engineering Fun</h3>
+                                <h3 className="text-2xl font-bold text-white">My Journey</h3>
                             </div>
                             <div className="space-y-4">
                                 <p className="text-base leading-relaxed text-gray-400 text-justify">
-                                    <span className="font-semibold text-white">I'm a frontend developer still early in my journey.</span> What started with curiosity during my first semester has grown into a genuine passion for building things on the web. My first website was far from perfect, but seeing it live taught me something important code has the power to create real value.
+                                    <span className="font-semibold text-white">I'm a frontend developer passionate about crafting exceptional web experiences.</span> What started with curiosity during my first semester has grown into a genuine commitment to building things on the web. My first website was far from perfect, but seeing it live taught me something important — code has the power to create real value.
                                 </p>
                                 <p className="text-base leading-relaxed text-gray-400 text-justify">
-                                    I've spent the last year learning by doing building projects, breaking things, and figuring out how to fix them. From responsive landing pages to full-stack applications, each project has pushed me to learn something new. I won <span className="font-semibold text-white">CODEFIESTA 3.0 National Hackathon</span>, which taught me how to work under pressure and deliver solutions quickly.
+                                    Over the past year, I've sharpened my skills by shipping real projects — from responsive landing pages to full-stack applications. Each project pushed me to learn something new. Winning <span className="font-semibold text-white">CODEFIESTA 3.0 National Hackathon</span> taught me how to deliver under pressure and collaborate effectively.
                                 </p>
                                 <p className="text-base leading-relaxed text-gray-400 text-justify">
-                                    I'm comfortable with React and Next.js, but I know there's so much more to learn. Every day is an opportunity to improve, whether it's understanding a new concept, optimizing code, or learning from the developer community. I'm eager to contribute, grow, and work on projects that challenge me.
+                                    I work confidently with React and modern frontend tools, and I'm actively expanding into Next.js and full-stack development. I thrive on challenges, love learning from the developer community, and I'm excited to contribute to projects that push boundaries.
                                 </p>
                             </div>
                         </div>

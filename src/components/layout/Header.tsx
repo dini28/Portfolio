@@ -2,13 +2,9 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import CV from '../../assets/CV.pdf';
 import logo_header from '../../assets/logo_header.svg';
+import { NAV_LINKS } from '../../data/social';
 
-const navLinks = [
-    { href: "#about", label: "About" },
-    { href: "#skills", label: "Skills" },
-    { href: "#projects", label: "Projects" },
-    { href: "#contact", label: "Contact" },
-];
+
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
@@ -39,7 +35,7 @@ export default function Header() {
             });
         }, observerOptions);
 
-        navLinks.forEach((link) => {
+        NAV_LINKS.forEach((link) => {
             const element = document.querySelector(link.href);
             if (element) observer.observe(element);
         });
@@ -124,7 +120,7 @@ export default function Header() {
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center gap-8">
                         <ul className="flex items-center space-x-1">
-                            {navLinks.map((link) => (
+                            {NAV_LINKS.map((link) => (
                                 <li key={link.href}>
                                     <a
                                         href={link.href}
@@ -204,7 +200,7 @@ export default function Header() {
                 >
                     <div className="bg-black/98 backdrop-blur-xl border-t border-white/10 shadow-2xl">
                         <ul className="container mx-auto px-6 py-6 space-y-1">
-                            {navLinks.map((link, index) => (
+                            {NAV_LINKS.map((link, index) => (
                                 <li
                                     key={link.href}
                                     className="transform transition-all duration-300"
@@ -248,7 +244,7 @@ export default function Header() {
                             <li
                                 className="transform transition-all duration-300 pt-2"
                                 style={{
-                                    transitionDelay: isOpen ? `${navLinks.length * 50}ms` : '0ms',
+                                    transitionDelay: isOpen ? `${NAV_LINKS.length * 50}ms` : '0ms',
                                     opacity: isOpen ? 1 : 0,
                                     transform: isOpen ? 'translateX(0)' : 'translateX(-20px)',
                                 }}

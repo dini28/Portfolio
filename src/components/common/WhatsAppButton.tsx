@@ -1,9 +1,9 @@
 import * as React from 'react';
+import { CONTACT_INFO } from '../../data/social';
 
 const WhatsAppButton: React.FC = () => {
-    const phoneNumber = '6377796008';
     const message = encodeURIComponent('Hello! I saw your portfolio and would like to connect.');
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+    const whatsappUrl = `https://wa.me/${CONTACT_INFO.whatsappNumber}?text=${message}`;
 
     return (
         <a
