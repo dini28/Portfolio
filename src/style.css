@@ -113,3 +113,12 @@ html.lenis body {
         max-width: calc(100vw - 2rem);
     }
 }
+
+/* ─── Shine Animation ─── */
+@keyframes shine-slide {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+.animate-shine {
+    animation: shine-slide 1.5s infinite;
+}

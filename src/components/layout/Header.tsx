@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
 import CV from '../../assets/CV.pdf';
 import logo_header from '../../assets/logo_header.svg';
 import { NAV_LINKS } from '../../data/social';
@@ -10,13 +9,21 @@ export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState("");
+    const [scrollProgress, setScrollProgress] = useState(0);
 
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 20);
+            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+            if (totalScroll > 0) {
+                setScrollProgress((window.scrollY / totalScroll) * 100);
+            } else {
+                setScrollProgress(0);
+            }
         };
 
         window.addEventListener("scroll", handleScroll);
+        handleScroll();
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
@@ -109,10 +116,10 @@ export default function Header() {
                                 <img
                                     src={logo_header}
                                     alt="Logo"
-                                    className="w-10 h-10 object-contain brightness-0 invert"
+                                    className="w-10 h-10 object-contain brightness-0 invert group-hover:rotate-[15deg] group-hover:scale-110 transition-all duration-500"
                                 />
-                                <span className="lg:hidden">DS</span>
-                                <span className="hidden lg:inline">Dipesh Soni</span>
+                                <span className="lg:hidden bg-gradient-to-r from-white via-neutral-300 to-white bg-clip-text text-transparent group-hover:from-white group-hover:to-neutral-400 transition-all duration-500">DS</span>
+                                <span className="hidden lg:inline bg-gradient-to-r from-white via-neutral-300 to-white bg-clip-text text-transparent group-hover:from-white group-hover:to-neutral-400 transition-all duration-500">Dipesh Soni</span>
                             </span>
                         </div>
                     </a>
@@ -148,10 +155,11 @@ export default function Header() {
                         {/* Download CV Button */}
                         <button
                             onClick={handleDownloadCV}
-                            className="px-5 py-2.5 bg-white text-black font-semibold rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] flex items-center gap-2 group"
+                            className="relative overflow-hidden px-5 py-2.5 bg-white text-black font-semibold rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] flex items-center gap-2 group cursor-pointer"
                         >
+                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-black/10 to-transparent -translate-x-full group-hover:animate-shine transition-transform" />
                             <svg
-                                className="w-4 h-4 group-hover:animate-bounce"
+                                className="w-4 h-4 transition-transform duration-300 group-hover:translate-y-0.5"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -170,22 +178,25 @@ export default function Header() {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className="lg:hidden relative p-2.5 rounded-xl text-white hover:bg-white/10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/30 group"
+                        className="lg:hidden flex flex-col justify-center items-center w-11 h-11 rounded-xl text-white hover:bg-white/10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/30 group"
                         aria-label="Toggle menu"
                         aria-expanded={isOpen}
                     >
-                        <div className="relative w-7 h-7">
-                            <Menu
-                                className={`absolute inset-0 w-7 h-7 transition-all duration-300 ${isOpen
-                                    ? "opacity-0 rotate-90 scale-50"
-                                    : "opacity-100 rotate-0 scale-100"
-                                    }`}
+                        <div className="flex flex-col justify-between w-6 h-5 relative">
+                            <span 
+                                className={`w-full h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out transform ${
+                                    isOpen ? "rotate-45 translate-y-[9px] bg-white" : ""
+                                }`} 
                             />
-                            <X
-                                className={`absolute inset-0 w-7 h-7 transition-all duration-300 ${isOpen
-                                    ? "opacity-100 rotate-0 scale-100"
-                                    : "opacity-0 -rotate-90 scale-50"
-                                    }`}
+                            <span 
+                                className={`w-full h-[2px] bg-white rounded-full transition-all duration-200 ease-in-out ${
+                                    isOpen ? "opacity-0 scale-x-0" : "opacity-100"
+                                }`} 
+                            />
+                            <span 
+                                className={`w-full h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out transform ${
+                                    isOpen ? "-rotate-45 -translate-y-[9px] bg-white" : ""
+                                }`} 
                             />
                         </div>
                     </button>
@@ -273,6 +284,13 @@ export default function Header() {
                     </div>
                 </div>
             </nav>
+            {/* Scroll Progress Bar */}
+            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-white/5 overflow-hidden">
+                <div
+                    className="h-full bg-gradient-to-r from-neutral-500 via-white to-neutral-500 shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-100 ease-out"
+                    style={{ width: `${scrollProgress}%` }}
+                />
+            </div>
         </header>
     );
 }

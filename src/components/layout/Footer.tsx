@@ -1,6 +1,7 @@
 import logo from '../../assets/logo.svg';
 import SectionBackground from '../common/SectionBackground';
 import { SOCIAL_LINKS, FOOTER_LINKS } from '../../data/social';
+import { ArrowUp, Quote } from 'lucide-react';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -17,6 +18,10 @@ const Footer = () => {
     return (
         <footer className="bg-black text-white py-12 sm:py-16 relative overflow-hidden">
             <SectionBackground variant="subtle" />
+
+            {/* Ambient Background Glows */}
+            <div className="absolute top-1/4 left-1/4 w-80 h-80 rounded-full bg-white/[0.02] blur-3xl pointer-events-none -z-10 animate-pulse duration-[8000ms]" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-white/[0.03] blur-3xl pointer-events-none -z-10 animate-pulse duration-[12000ms]" />
 
             <div className="container mx-auto px-6 sm:px-8 lg:px-12 xl:px-20 relative z-10">
                 {/* Footer Top */}
@@ -37,13 +42,22 @@ const Footer = () => {
                     </div>
 
                     {/* Thank You Message */}
-                    <div className="text-center lg:text-right">
-                        <p className="text-base sm:text-lg text-white font-medium">
-                            Thank you for visiting my portfolio!
-                        </p>
-                        <p className="text-sm sm:text-base text-gray-400 mt-1">
-                            Let's build something amazing together
-                        </p>
+                    <div className="text-center lg:text-right flex flex-col items-center lg:items-end gap-3">
+                        <div>
+                            <p className="text-base sm:text-lg text-white font-medium">
+                                Thank you for visiting my portfolio!
+                            </p>
+                            <p className="text-sm sm:text-base text-gray-400 mt-1">
+                                Let's build something amazing together
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg border border-white/10 bg-white/5 hover:bg-white hover:text-black transition-all duration-300 group cursor-pointer"
+                        >
+                            Back to Top
+                            <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
+                        </button>
                     </div>
                 </div>
 
@@ -72,32 +86,51 @@ const Footer = () => {
                     {/* Social Links */}
                     <div>
                         <h4 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-white">Connect</h4>
-                        <ul className="space-y-2 sm:space-y-3">
-                            {SOCIAL_LINKS.map((link) => (
-                                <li key={link.label}>
+                        <div className="flex flex-wrap gap-3">
+                            {SOCIAL_LINKS.map((link) => {
+                                let hoverBg = "hover:bg-white/10 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:text-white";
+                                let brandColor = "text-gray-400";
+                                
+                                if (link.label.toLowerCase() === 'github') {
+                                    hoverBg = "hover:bg-neutral-800/80 hover:border-neutral-700 hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:text-white";
+                                } else if (link.label.toLowerCase() === 'linkedin') {
+                                    hoverBg = "hover:bg-[#0077b5]/20 hover:border-[#0077b5]/40 hover:shadow-[0_0_20px_rgba(0,119,181,0.3)] hover:text-[#00a0dc]";
+                                    brandColor = "text-gray-400 group-hover:text-[#00a0dc]";
+                                } else if (link.label.toLowerCase() === 'email') {
+                                    hoverBg = "hover:bg-[#ea4335]/20 hover:border-[#ea4335]/40 hover:shadow-[0_0_20px_rgba(234,67,53,0.3)] hover:text-[#ff6b5a]";
+                                    brandColor = "text-gray-400 group-hover:text-[#ff6b5a]";
+                                }
+
+                                return (
                                     <a
+                                        key={link.label}
                                         href={link.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base text-gray-400 hover:text-white transition-colors group"
+                                        className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md transition-all duration-300 group ${hoverBg}`}
                                     >
-                                        <span className="group-hover:scale-110 transition-transform">
+                                        <span className={`transition-all duration-300 group-hover:scale-110 ${brandColor}`}>
                                             <link.icon className="w-5 h-5" />
                                         </span>
-                                        {link.label}
+                                        <span className="text-sm sm:text-base font-medium">{link.label}</span>
                                     </a>
-                                </li>
-                            ))}
-                        </ul>
+                                );
+                            })}
+                        </div>
                     </div>
 
                     {/* Quote */}
                     <div className="md:col-span-2 lg:col-span-1">
                         <h4 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-white">Philosophy</h4>
-                        <blockquote className="text-sm sm:text-base text-gray-400 italic leading-relaxed border-l-4 border-white/30 pl-3 sm:pl-4">
-                            "I believe learning doesn't end. There's always a better way to do things,
-                            and I'm always curious enough to go find it."
-                        </blockquote>
+                        <div className="relative p-5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden group">
+                            {/* Decorative Quote Icon Background */}
+                            <Quote className="absolute -right-2 -bottom-2 w-24 h-24 text-white/5 select-none pointer-events-none transform -rotate-12 transition-transform duration-500 group-hover:rotate-0" />
+                            
+                            <blockquote className="text-sm sm:text-base text-gray-300 italic leading-relaxed relative z-10 border-l-2 border-white/20 pl-4">
+                                "I believe learning doesn't end. There's always a better way to do things,
+                                and I'm always curious enough to go find it."
+                            </blockquote>
+                        </div>
                     </div>
                 </div>
 
