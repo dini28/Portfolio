@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Sun, Moon } from "lucide-react";
 import CV from '../../assets/CV.pdf';
 import logo_header from '../../assets/logo_header.svg';
 import { NAV_LINKS } from '../../data/social';
@@ -12,32 +11,6 @@ export default function Header() {
     const [activeSection, setActiveSection] = useState("");
     const [scrollProgress, setScrollProgress] = useState(0);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-    const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-        if (typeof window !== 'undefined') {
-            return document.documentElement.classList.contains('light') ? 'light' : 'dark';
-        }
-        return 'dark';
-    });
-
-    useEffect(() => {
-        const currentTheme = document.documentElement.classList.contains('light') ? 'light' : 'dark';
-        setTheme(currentTheme);
-    }, []);
-
-    const toggleTheme = () => {
-        const nextTheme = theme === 'dark' ? 'light' : 'dark';
-        setTheme(nextTheme);
-        if (nextTheme === 'light') {
-            document.documentElement.classList.add('light');
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-        } else {
-            document.documentElement.classList.add('dark');
-            document.documentElement.classList.remove('light');
-            localStorage.setItem('theme', 'dark');
-        }
-        window.dispatchEvent(new Event('theme-change'));
-    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -114,14 +87,11 @@ export default function Header() {
 
     return (
         <header
-            className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl transition-all duration-500 rounded-2xl border border-white/10 ${
+            className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl transition-all duration-500 rounded-2xl border ${
                 isScrolled 
-                    ? "bg-black/80 backdrop-blur-xl py-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.4)]" 
-                    : "bg-black/40 backdrop-blur-md py-3 shadow-lg"
+                    ? "bg-black/80 backdrop-blur-xl py-1.5 border-white/10 shadow-[0_8px_30px_rgba(255,255,255,0.05)]" 
+                    : "bg-black/40 backdrop-blur-md py-3 border-white/5 shadow-lg"
             }`}
-            style={{
-                boxShadow: isScrolled ? 'var(--header-shadow)' : undefined
-            }}
         >
             <nav className="mx-auto px-6 lg:px-8">
                 <div className="flex items-center justify-between h-14">
@@ -148,7 +118,7 @@ export default function Header() {
                                 <img
                                     src={logo_header}
                                     alt="Logo"
-                                    className="w-8 h-8 object-contain brightness-0 dark:invert group-hover:rotate-[15deg] group-hover:scale-110 transition-all duration-500"
+                                    className="w-8 h-8 object-contain brightness-0 invert group-hover:rotate-[15deg] group-hover:scale-110 transition-all duration-500"
                                 />
                                 <span className="lg:hidden bg-gradient-to-r from-white via-neutral-300 to-white bg-clip-text text-transparent group-hover:from-white group-hover:to-neutral-400 transition-all duration-500">DS</span>
                                 <span className="hidden lg:inline bg-gradient-to-r from-white via-neutral-300 to-white bg-clip-text text-transparent group-hover:from-white group-hover:to-neutral-400 transition-all duration-500">Dipesh Soni</span>
@@ -193,19 +163,6 @@ export default function Header() {
                             ))}
                         </ul>
 
-                        {/* Theme Toggle Button (Desktop) */}
-                        <button
-                            onClick={toggleTheme}
-                            className="p-2 rounded-lg border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 flex items-center justify-center text-white cursor-pointer hover:scale-110 active:scale-95"
-                            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-                        >
-                            {theme === 'dark' ? (
-                                <Sun className="w-4 h-4 text-amber-400 rotate-0 transition-transform duration-500 hover:rotate-90" />
-                            ) : (
-                                <Moon className="w-4 h-4 text-indigo-600 rotate-0 transition-transform duration-500 hover:-rotate-12" />
-                            )}
-                        </button>
-
                         {/* Download CV Button */}
                         <button
                             onClick={handleDownloadCV}
@@ -231,19 +188,6 @@ export default function Header() {
 
                     {/* Mobile Controls */}
                     <div className="lg:hidden flex items-center gap-3">
-                        {/* Theme Toggle Button (Mobile) */}
-                        <button
-                            onClick={toggleTheme}
-                            className="p-2 rounded-xl border border-white/10 hover:bg-white/10 text-white cursor-pointer hover:scale-105 active:scale-95 transition-all duration-300"
-                            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-                        >
-                            {theme === 'dark' ? (
-                                <Sun className="w-4.5 h-4.5 text-amber-400" />
-                            ) : (
-                                <Moon className="w-4.5 h-4.5 text-indigo-600" />
-                            )}
-                        </button>
-
                         {/* Mobile Menu Button */}
                         <button
                             onClick={() => setIsOpen(!isOpen)}
@@ -357,11 +301,8 @@ export default function Header() {
             {/* Scroll Progress Bar along the bottom of the pill */}
             <div className="absolute bottom-0 left-4 right-4 h-[2px] bg-white/5 overflow-hidden rounded-full">
                 <div
-                    className="h-full bg-gradient-to-r from-neutral-500 via-white to-neutral-500 transition-all duration-100 ease-out"
-                    style={{ 
-                        width: `${scrollProgress}%`,
-                        boxShadow: 'var(--progress-shadow)'
-                    }}
+                    className="h-full bg-gradient-to-r from-neutral-500 via-white to-neutral-500 shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-100 ease-out"
+                    style={{ width: `${scrollProgress}%` }}
                 />
             </div>
         </header>

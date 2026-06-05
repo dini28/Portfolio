@@ -93,34 +93,28 @@ const Hero = () => {
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 {/* Animated Grid */}
                 <div
-                    className="absolute inset-0 opacity-[0.5]"
+                    className="absolute inset-0 opacity-[0.04]"
                     style={{
-                        backgroundImage: `linear-gradient(var(--theme-grid-color) 2px, transparent 2px), linear-gradient(90deg, var(--theme-grid-color) 2px, transparent 2px)`,
+                        backgroundImage: `linear-gradient(rgba(255,255,255,0.15) 2px, transparent 2px), linear-gradient(90deg, rgba(255,255,255,0.15) 2px, transparent 2px)`,
                         backgroundSize: '80px 80px',
                         animation: 'grid-move 20s linear infinite'
                     }}
                 />
                 <div
-                    className="absolute inset-0 opacity-[0.3]"
+                    className="absolute inset-0 opacity-[0.02]"
                     style={{
-                        backgroundImage: `linear-gradient(var(--theme-grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--theme-grid-color) 1px, transparent 1px)`,
+                        backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
                         backgroundSize: '20px 20px'
                     }}
                 />
 
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,var(--theme-blob-bg),transparent_50%)]" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,var(--theme-blob-bg),transparent_50%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.04),transparent_50%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,255,255,0.03),transparent_50%)]" />
 
                 <div className="mouse-glow absolute w-[800px] h-[800px] rounded-full blur-[80px] transition-opacity duration-300 ease-out" />
 
-                <div 
-                    className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse duration-[4000ms]" 
-                    style={{ backgroundColor: 'var(--theme-blob-bg)' }}
-                />
-                <div 
-                    className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse duration-[6000ms] delay-2000" 
-                    style={{ backgroundColor: 'var(--theme-blob-bg)' }}
-                />
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-white/5 to-transparent rounded-full blur-3xl animate-pulse duration-[4000ms]" />
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-tl from-white/5 to-transparent rounded-full blur-3xl animate-pulse duration-[6000ms] delay-2000" />
             </div>
 
             {/* Main Content */}
