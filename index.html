@@ -7,6 +7,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#000000" />
 
+  <!-- Theme Initialization -->
+  <script>
+    (function() {
+      try {
+        const savedTheme = localStorage.getItem('theme');
+        const theme = savedTheme || 'dark';
+        if (theme === 'light') {
+          document.documentElement.classList.add('light');
+          document.documentElement.classList.remove('dark');
+        } else {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        }
+      } catch (e) {
+        console.error('Failed to initialize theme:', e);
+      }
+    })();
+  </script>
+
   <!-- SEO Meta Tags -->
   <meta name="description"
     content="Dipesh Soni — Frontend Developer specializing in React, TypeScript, and modern web technologies. View my projects, skills, and get in touch." />

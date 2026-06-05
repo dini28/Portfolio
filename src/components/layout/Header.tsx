@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Sun, Moon } from "lucide-react";
 import CV from '../../assets/CV.pdf';
 import logo_header from '../../assets/logo_header.svg';
 import { NAV_LINKS } from '../../data/social';
@@ -10,6 +11,33 @@ export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState("");
     const [scrollProgress, setScrollProgress] = useState(0);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+        if (typeof window !== 'undefined') {
+            return document.documentElement.classList.contains('light') ? 'light' : 'dark';
+        }
+        return 'dark';
+    });
+
+    useEffect(() => {
+        const currentTheme = document.documentElement.classList.contains('light') ? 'light' : 'dark';
+        setTheme(currentTheme);
+    }, []);
+
+    const toggleTheme = () => {
+        const nextTheme = theme === 'dark' ? 'light' : 'dark';
+        setTheme(nextTheme);
+        if (nextTheme === 'light') {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        } else {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+            localStorage.setItem('theme', 'dark');
+        }
+        window.dispatchEvent(new Event('theme-change'));
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -86,13 +114,17 @@ export default function Header() {
 
     return (
         <header
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled
-                ? "bg-black/95 backdrop-blur-xl border-b border-white/10 shadow-[0_8px_30px_rgba(255,255,255,0.1)]"
-                : "bg-transparent"
-                }`}
+            className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl transition-all duration-500 rounded-2xl border border-white/10 ${
+                isScrolled 
+                    ? "bg-black/80 backdrop-blur-xl py-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.4)]" 
+                    : "bg-black/40 backdrop-blur-md py-3 shadow-lg"
+            }`}
+            style={{
+                boxShadow: isScrolled ? 'var(--header-shadow)' : undefined
+            }}
         >
-            <nav className="container mx-auto px-4 sm:px-6 lg:px-10">
-                <div className="flex items-center justify-between h-20">
+            <nav className="mx-auto px-6 lg:px-8">
+                <div className="flex items-center justify-between h-14">
                     {/* Logo/Name */}
                     <a
                         href="#"
@@ -108,7 +140,7 @@ export default function Header() {
                                 }}
                             />
 
-                            <span className="relative text-3xl tracking-tight transition-all duration-300 flex items-center gap-2 text-white"
+                            <span className="relative text-2xl tracking-tight transition-all duration-300 flex items-center gap-2 text-white"
                                 style={{
                                     fontFamily: "Offside",
                                     fontWeight: "bold"
@@ -116,7 +148,7 @@ export default function Header() {
                                 <img
                                     src={logo_header}
                                     alt="Logo"
-                                    className="w-10 h-10 object-contain brightness-0 invert group-hover:rotate-[15deg] group-hover:scale-110 transition-all duration-500"
+                                    className="w-8 h-8 object-contain brightness-0 dark:invert group-hover:rotate-[15deg] group-hover:scale-110 transition-all duration-500"
                                 />
                                 <span className="lg:hidden bg-gradient-to-r from-white via-neutral-300 to-white bg-clip-text text-transparent group-hover:from-white group-hover:to-neutral-400 transition-all duration-500">DS</span>
                                 <span className="hidden lg:inline bg-gradient-to-r from-white via-neutral-300 to-white bg-clip-text text-transparent group-hover:from-white group-hover:to-neutral-400 transition-all duration-500">Dipesh Soni</span>
@@ -125,37 +157,59 @@ export default function Header() {
                     </a>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden lg:flex items-center gap-8">
+                    <div className="hidden lg:flex items-center gap-6">
                         <ul className="flex items-center space-x-1">
-                            {NAV_LINKS.map((link) => (
-                                <li key={link.href}>
+                            {NAV_LINKS.map((link, index) => (
+                                <li 
+                                    key={link.href} 
+                                    className="relative"
+                                    onMouseEnter={() => setHoveredIndex(index)}
+                                    onMouseLeave={() => setHoveredIndex(null)}
+                                >
                                     <a
                                         href={link.href}
                                         onClick={(e) => handleNavClick(e, link.href)}
                                         aria-current={
                                             activeSection === link.href.substring(1) ? "page" : undefined
                                         }
-                                        className={`relative px-4 py-2 text-base font-medium transition-colors duration-300 hover:text-white group ${activeSection === link.href.substring(1)
-                                            ? "text-white"
-                                            : "text-gray-400"
-                                            }`}
+                                        className={`relative px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-300 z-10 ${
+                                            activeSection === link.href.substring(1)
+                                                ? "text-white"
+                                                : "text-gray-400 hover:text-white"
+                                        }`}
                                     >
                                         {link.label}
-                                        <span
-                                            className={`absolute -bottom-1 left-1/2 -translate-x-1/2 h-0.5 bg-white transition-all duration-300 ${activeSection === link.href.substring(1)
-                                                ? "w-full"
-                                                : "w-0 group-hover:w-full"
-                                                }`}
-                                        />
+                                        {activeSection === link.href.substring(1) && (
+                                            <span className="absolute bottom-1 left-4 right-4 h-0.5 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+                                        )}
                                     </a>
+                                    {/* Hover Capsule Background */}
+                                    <span
+                                        className={`absolute inset-0 bg-white/5 rounded-lg -z-0 transition-all duration-200 pointer-events-none ${
+                                            hoveredIndex === index ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                                        }`}
+                                    />
                                 </li>
                             ))}
                         </ul>
 
+                        {/* Theme Toggle Button (Desktop) */}
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 rounded-lg border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 flex items-center justify-center text-white cursor-pointer hover:scale-110 active:scale-95"
+                            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+                        >
+                            {theme === 'dark' ? (
+                                <Sun className="w-4 h-4 text-amber-400 rotate-0 transition-transform duration-500 hover:rotate-90" />
+                            ) : (
+                                <Moon className="w-4 h-4 text-indigo-600 rotate-0 transition-transform duration-500 hover:-rotate-12" />
+                            )}
+                        </button>
+
                         {/* Download CV Button */}
                         <button
                             onClick={handleDownloadCV}
-                            className="relative overflow-hidden px-5 py-2.5 bg-white text-black font-semibold rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] flex items-center gap-2 group cursor-pointer"
+                            className="relative overflow-hidden px-4 py-2 bg-white text-black font-semibold rounded-lg text-sm transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] flex items-center gap-2 group cursor-pointer"
                         >
                             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-black/10 to-transparent -translate-x-full group-hover:animate-shine transition-transform" />
                             <svg
@@ -175,42 +229,58 @@ export default function Header() {
                         </button>
                     </div>
 
-                    {/* Mobile Menu Button */}
-                    <button
-                        onClick={() => setIsOpen(!isOpen)}
-                        className="lg:hidden flex flex-col justify-center items-center w-11 h-11 rounded-xl text-white hover:bg-white/10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/30 group"
-                        aria-label="Toggle menu"
-                        aria-expanded={isOpen}
-                    >
-                        <div className="flex flex-col justify-between w-6 h-5 relative">
-                            <span 
-                                className={`w-full h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out transform ${
-                                    isOpen ? "rotate-45 translate-y-[9px] bg-white" : ""
-                                }`} 
-                            />
-                            <span 
-                                className={`w-full h-[2px] bg-white rounded-full transition-all duration-200 ease-in-out ${
-                                    isOpen ? "opacity-0 scale-x-0" : "opacity-100"
-                                }`} 
-                            />
-                            <span 
-                                className={`w-full h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out transform ${
-                                    isOpen ? "-rotate-45 -translate-y-[9px] bg-white" : ""
-                                }`} 
-                            />
-                        </div>
-                    </button>
+                    {/* Mobile Controls */}
+                    <div className="lg:hidden flex items-center gap-3">
+                        {/* Theme Toggle Button (Mobile) */}
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 rounded-xl border border-white/10 hover:bg-white/10 text-white cursor-pointer hover:scale-105 active:scale-95 transition-all duration-300"
+                            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+                        >
+                            {theme === 'dark' ? (
+                                <Sun className="w-4.5 h-4.5 text-amber-400" />
+                            ) : (
+                                <Moon className="w-4.5 h-4.5 text-indigo-600" />
+                            )}
+                        </button>
+
+                        {/* Mobile Menu Button */}
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="flex flex-col justify-center items-center w-10 h-10 rounded-xl text-white hover:bg-white/10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/30 group"
+                            aria-label="Toggle menu"
+                            aria-expanded={isOpen}
+                        >
+                            <div className="flex flex-col justify-between w-5 h-4 relative">
+                                <span 
+                                    className={`w-full h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out transform ${
+                                        isOpen ? "rotate-45 translate-y-[7px] bg-white" : ""
+                                    }`} 
+                                />
+                                <span 
+                                    className={`w-full h-[2px] bg-white rounded-full transition-all duration-200 ease-in-out ${
+                                        isOpen ? "opacity-0 scale-x-0" : "opacity-100"
+                                    }`} 
+                                />
+                                <span 
+                                    className={`w-full h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out transform ${
+                                        isOpen ? "-rotate-45 -translate-y-[7px] bg-white" : ""
+                                    }`} 
+                                />
+                            </div>
+                        </button>
+                    </div>
                 </div>
 
                 {/* Mobile Navigation */}
                 <div
-                    className={`lg:hidden absolute top-20 left-0 right-0 transition-all duration-300 ease-out origin-top ${isOpen
+                    className={`lg:hidden absolute top-[calc(100%+8px)] left-0 right-0 transition-all duration-300 ease-out origin-top ${isOpen
                         ? "opacity-100 scale-y-100 translate-y-0"
                         : "opacity-0 scale-y-95 -translate-y-4 pointer-events-none"
                         }`}
                 >
-                    <div className="bg-black/98 backdrop-blur-xl border-t border-white/10 shadow-2xl">
-                        <ul className="container mx-auto px-6 py-6 space-y-1">
+                    <div className="bg-black/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+                        <ul className="px-4 py-4 space-y-1">
                             {NAV_LINKS.map((link, index) => (
                                 <li
                                     key={link.href}
@@ -284,11 +354,14 @@ export default function Header() {
                     </div>
                 </div>
             </nav>
-            {/* Scroll Progress Bar */}
-            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-white/5 overflow-hidden">
+            {/* Scroll Progress Bar along the bottom of the pill */}
+            <div className="absolute bottom-0 left-4 right-4 h-[2px] bg-white/5 overflow-hidden rounded-full">
                 <div
-                    className="h-full bg-gradient-to-r from-neutral-500 via-white to-neutral-500 shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-100 ease-out"
-                    style={{ width: `${scrollProgress}%` }}
+                    className="h-full bg-gradient-to-r from-neutral-500 via-white to-neutral-500 transition-all duration-100 ease-out"
+                    style={{ 
+                        width: `${scrollProgress}%`,
+                        boxShadow: 'var(--progress-shadow)'
+                    }}
                 />
             </div>
         </header>
