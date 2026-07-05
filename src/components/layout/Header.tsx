@@ -9,18 +9,11 @@ export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState("");
-    const [scrollProgress, setScrollProgress] = useState(0);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 20);
-            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
-            if (totalScroll > 0) {
-                setScrollProgress((window.scrollY / totalScroll) * 100);
-            } else {
-                setScrollProgress(0);
-            }
         };
 
         window.addEventListener("scroll", handleScroll);
