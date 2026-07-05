@@ -55,7 +55,7 @@ export const PROJECTS_DATA: readonly ProjectData[] = [
         description: 'A high-performance hotel booking platform reconstructed with Next.js App Router. Featuring SEO optimization, server-side rendering for lightning-fast speeds, and secure payment integrations.',
         image: ghummakkad,
         technologies: ['HTML5', 'CSS3', 'JavaScript', 'MongoDB', 'Firebase'],
-        liveUrl: '',
+        liveUrl: 'https://ghummakkad.vercel.app/',
         githubUrl: 'https://github.com/dini28/Ghummakkad',
         caseStudy: {
             problem: "The tourism platform struggled with poor search visibility and slow load times, limiting discoverability for hotels and experiences across Rajasthan.",
