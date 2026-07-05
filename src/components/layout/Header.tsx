@@ -298,13 +298,6 @@ export default function Header() {
                     </div>
                 </div>
             </nav>
-            {/* Scroll Progress Bar along the bottom of the pill */}
-            <div className="absolute bottom-0 left-4 right-4 h-[2px] bg-white/5 overflow-hidden rounded-full">
-                <div
-                    className="h-full bg-gradient-to-r from-neutral-500 via-white to-neutral-500 shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-100 ease-out"
-                    style={{ width: `${scrollProgress}%` }}
-                />
-            </div>
         </header>
     );
 }

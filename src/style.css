@@ -55,6 +55,15 @@ html.lenis body {
     top: var(--mouse-y, 50%);
 }
 
+@keyframes float-slow {
+    0% {
+        transform: translateY(0px);
+    }
+    100% {
+        transform: translateY(-12px);
+    }
+}
+
 /* ─── Shared Keyframes ─── */
 @keyframes fadeIn {
     from {
