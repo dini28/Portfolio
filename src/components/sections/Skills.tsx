@@ -19,7 +19,7 @@ const Skills = () => {
     };
 
     return (
-        <section ref={sectionRef} id="skills" className="py-20 bg-neutral-950 relative overflow-hidden">
+        <section ref={sectionRef} id="skills" className="py-20 bg-black relative overflow-hidden">
             {/* Background */}
             <SectionBackground variant="subtle" animated />
 

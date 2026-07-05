@@ -98,7 +98,7 @@ const Contact = () => {
     };
 
     return (
-        <section ref={sectionRef} id="contact" className="py-20 bg-neutral-950 relative overflow-hidden">
+        <section ref={sectionRef} id="contact" className="py-20 bg-black relative overflow-hidden">
             {/* Background */}
             <SectionBackground variant="subtle" animated />
 

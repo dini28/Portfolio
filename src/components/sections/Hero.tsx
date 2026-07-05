@@ -84,22 +84,6 @@ const Hero = () => {
         >
             {/* Background Elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {/* Animated Grid */}
-                <div
-                    className="absolute inset-0 opacity-[0.04]"
-                    style={{
-                        backgroundImage: `linear-gradient(rgba(255,255,255,0.15) 2px, transparent 2px), linear-gradient(90deg, rgba(255,255,255,0.15) 2px, transparent 2px)`,
-                        backgroundSize: '80px 80px',
-                        animation: 'grid-move 20s linear infinite'
-                    }}
-                />
-                <div
-                    className="absolute inset-0 opacity-[0.02]"
-                    style={{
-                        backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-                        backgroundSize: '20px 20px'
-                    }}
-                />
 
                 <div className="mouse-glow absolute w-[800px] h-[800px] rounded-full blur-[80px] transition-opacity duration-300 ease-out" />
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-white/5 to-transparent rounded-full blur-3xl animate-pulse duration-[4000ms]" />
@@ -139,7 +123,7 @@ const Hero = () => {
 
                         {/* Title and Intro */}
                         <div className="space-y-6 mb-10">
-                            <h1 className="text-7xl sm:text-8xl lg:text-9.5xl font-bold tracking-tight text-white leading-none select-none">
+                            <h1 className="text-5xl sm:text-8xl lg:text-9.5xl font-bold tracking-tight text-white leading-none select-none">
                                 Hello
                             </h1>
                             <div className="text-lg sm:text-2xl text-neutral-400 font-medium tracking-wide flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2">
@@ -182,7 +166,7 @@ const Hero = () => {
 
                     {/* Right Side: Squarish Portrait Image */}
                     <div className={`lg:col-span-5 flex justify-center lg:justify-end transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} mt-12 lg:mt-0`}>
-                        <div className="relative w-full max-w-[420px] aspect-square rounded-[2rem] overflow-hidden border-2 border-white/25 group-hover:border-white/60 transition-all duration-500 group bg-neutral-950 shadow-2xl">
+                        <div className="relative w-full max-w-[300px] sm:max-w-[420px] aspect-square rounded-[2rem] overflow-hidden border-2 border-white/25 group-hover:border-white/60 transition-all duration-500 group bg-neutral-950 shadow-2xl mx-auto">
                             {/* Ambient Glow */}
                             <div className="absolute -inset-4 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl pointer-events-none" />
 

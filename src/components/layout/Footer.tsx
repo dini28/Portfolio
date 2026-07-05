@@ -71,7 +71,7 @@ const Footer = () => {
                             <ul className="space-y-5">
                                 {SOCIAL_LINKS.map((link) => {
                                     let brandColor = "text-neutral-500 group-hover:text-white";
-                                    
+
                                     if (link.label.toLowerCase() === 'github') {
                                         brandColor = "text-neutral-500 group-hover:text-white";
                                     } else if (link.label.toLowerCase() === 'linkedin') {
@@ -113,7 +113,7 @@ const Footer = () => {
                 </div>
 
                 {/* Footer Bottom */}
-                <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-center border-t border-white/10 pt-8">
+                <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-center">
                     {/* Brand Meta */}
                     <div className="flex items-center gap-4">
                         <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center p-1.5">

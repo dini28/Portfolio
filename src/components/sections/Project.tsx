@@ -146,12 +146,12 @@ const Project = () => {
                     className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-in fade-in duration-300"
                     onClick={() => setSelectedProject(null)}
                 >
-                    <div
-                        className="relative w-full max-w-2xl bg-black border-2 border-white/20 rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {/* Modal Header/Image */}
-                        <div className="relative h-48 sm:h-64 overflow-hidden">
+                        <div
+                            className="relative w-full max-w-2xl max-h-[90vh] bg-black border-2 border-white/20 rounded-2xl sm:rounded-3xl overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-300"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Modal Header/Image */}
+                            <div className="relative h-40 sm:h-64 overflow-hidden shrink-0">
                             <img
                                 src={selectedProject.image}
                                 alt={selectedProject.title}
@@ -164,14 +164,14 @@ const Project = () => {
                             >
                                 <X className="w-5 h-5" />
                             </button>
-                            <div className="absolute bottom-6 left-8">
-                                <h3 className="text-3xl font-bold text-white mb-1">{selectedProject.title}</h3>
-                                <p className="text-gray-400 font-medium">{selectedProject.subtitle}</p>
+                                <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-8">
+                                    <h3 className="text-xl sm:text-3xl font-bold text-white mb-1">{selectedProject.title}</h3>
+                                    <p className="text-sm sm:text-base text-gray-400 font-medium">{selectedProject.subtitle}</p>
                             </div>
                         </div>
 
-                        {/* Modal Content */}
-                        <div className="p-8 space-y-8">
+                            {/* Modal Content */}
+                            <div className="p-4 sm:p-8 space-y-6 sm:space-y-8">
                             <div className="grid gap-6">
                                 {/* Problem */}
                                 <div className="flex gap-4">
@@ -207,7 +207,7 @@ const Project = () => {
                                 </div>
                             </div>
 
-                            <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                                <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                                 <div className="flex gap-2">
                                     {selectedProject.technologies.slice(0, 3).map(tech => (
                                         <span key={tech} className="text-[10px] uppercase tracking-widest font-bold text-gray-500">{tech}</span>
