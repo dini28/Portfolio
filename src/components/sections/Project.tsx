@@ -14,7 +14,7 @@ const Project = () => {
     const [selectedProject, setSelectedProject] = useState<(typeof PROJECTS_DATA)[number] | null>(null);
 
     return (
-        <section ref={sectionRef} id="projects" className="py-20 bg-black relative overflow-hidden">
+        <section ref={sectionRef} id="projects" className="py-20 bg-transparent relative overflow-hidden">
             {/* Background */}
             <SectionBackground />
 

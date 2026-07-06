@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { Code2, ArrowRight } from 'lucide-react';
 import heroImage from '../../assets/dipesh.webp';
+import { useMagnetic } from '../../hooks/useMagnetic';
 
 const Hero = () => {
     const [textState, setTextState] = useState({
@@ -11,6 +12,8 @@ const Hero = () => {
     });
     const [isVisible, setIsVisible] = useState(false);
     const heroRef = useRef<HTMLElement>(null);
+    const viewWorkRef = useMagnetic<HTMLButtonElement>(0.2);
+    const scrollDownRef = useMagnetic<HTMLButtonElement>(0.3);
 
     const roles = useMemo(() => ['Frontend Developer', 'React Enthusiast', 'UI/UX Designer', 'Web Developer'], []);
 
@@ -80,15 +83,15 @@ const Hero = () => {
         <section
             ref={heroRef}
             id="hero"
-            className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black py-16 lg:py-0"
+            className="min-h-screen flex items-center justify-center relative overflow-hidden bg-transparent py-16 lg:py-0"
         >
             {/* Background Elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-
                 <div className="mouse-glow absolute w-[800px] h-[800px] rounded-full blur-[80px] transition-opacity duration-300 ease-out" />
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-white/5 to-transparent rounded-full blur-3xl animate-pulse duration-[4000ms]" />
                 <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-tl from-white/5 to-transparent rounded-full blur-3xl animate-pulse duration-[6000ms] delay-2000" />
             </div>
+
 
             {/* Left Rotated Sidebar Banner */}
             <div className="hidden lg:flex absolute left-12 top-0 bottom-0 py-20 flex-col items-center justify-between pointer-events-none z-20">
@@ -147,6 +150,7 @@ const Hero = () => {
                         {/* Action Link & Scroll Down */}
                         <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-8">
                             <button
+                                ref={viewWorkRef}
                                 onClick={() => scrollToSection('#projects')}
                                 className="group inline-flex items-center gap-2 bg-white text-black font-semibold px-8 py-3.5 rounded-full hover:bg-neutral-200 transition-all text-sm cursor-pointer shadow-lg hover:shadow-white/10"
                             >
@@ -155,6 +159,7 @@ const Hero = () => {
                             </button>
 
                             <button
+                                ref={scrollDownRef}
                                 onClick={() => scrollToSection('#about')}
                                 className="group inline-flex items-center gap-2 text-xs text-neutral-500 hover:text-white uppercase tracking-[0.25em] transition-colors cursor-pointer py-2"
                             >

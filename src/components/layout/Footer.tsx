@@ -16,7 +16,7 @@ const Footer = () => {
     };
 
     return (
-        <footer className="bg-black text-white py-16 sm:py-24 relative overflow-hidden border-t border-white/5">
+        <footer className="bg-transparent text-white py-16 sm:py-24 relative overflow-hidden border-t border-white/5">
             <SectionBackground variant="subtle" />
 
             {/* Ambient Background Glows */}

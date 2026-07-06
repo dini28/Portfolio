@@ -14,7 +14,7 @@ const About = () => {
         <section
             ref={sectionRef}
             id="about"
-            className="py-20 bg-black relative overflow-hidden"
+            className="py-20 bg-transparent relative overflow-hidden"
         >
             <SectionBackground animated />
 

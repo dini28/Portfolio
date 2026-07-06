@@ -19,7 +19,7 @@ const Skills = () => {
     };
 
     return (
-        <section ref={sectionRef} id="skills" className="py-20 bg-black relative overflow-hidden">
+        <section ref={sectionRef} id="skills" className="py-20 bg-transparent relative overflow-hidden">
             {/* Background */}
             <SectionBackground variant="subtle" animated />
 
@@ -36,39 +36,105 @@ const Skills = () => {
 
                 {/* Skills Grid */}
                 <div ref={containerRef} className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                    {SKILL_CATEGORIES.map((category, index) => (
-                        <div
-                            key={index}
-                            className={`transition-all duration-700 ${visibleItems[index] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
-                        >
-                            <Card
-                                className="border-2 border-white/10 bg-white/5 backdrop-blur-md hover:border-white/20 hover:bg-white/10 cursor-pointer group transition-all duration-300 hover:shadow-[0_20px_60px_rgba(255,255,255,0.15)]"
-                                onClick={() => setActiveIndex(index)}
+                    {SKILL_CATEGORIES.map((category, index) => {
+                        const isFlipped = activeIndex === index;
+                        return (
+                            <div
+                                key={index}
+                                className={`flip-card-container transition-all duration-700 ${visibleItems[index] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
                             >
-                                <CardContent className="p-8">
-                                    <div className="text-center mb-6">
-                                        <div className="w-16 h-16 bg-gradient-to-br from-white to-gray-400 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                                            {getIcon(category.iconName)}
-                                        </div>
-                                        <h3 className="text-xl font-bold text-white mb-2">{category.title}</h3>
-                                        <div className="h-0.5 w-12 mx-auto bg-white/50 rounded-full" />
+                                <div className={`flip-card-inner ${isFlipped ? 'flipped' : ''}`}>
+                                    {/* Front Side */}
+                                    <div className={`flip-card-front w-full h-full ${isFlipped ? 'pointer-events-none' : ''}`}>
+                                        <Card
+                                            className="border-2 border-white/10 bg-white/5 backdrop-blur-md hover:border-white/20 hover:bg-white/10 cursor-pointer group transition-all duration-300 hover:shadow-[0_20px_60px_rgba(255,255,255,0.15)] w-full h-full flex flex-col justify-center"
+                                            onClick={() => setActiveIndex(index)}
+                                        >
+                                            <CardContent className="p-8 flex flex-col justify-center h-full">
+                                                <div className="text-center mb-6">
+                                                    <div className="w-16 h-16 bg-gradient-to-br from-white to-gray-400 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                                                        {getIcon(category.iconName)}
+                                                    </div>
+                                                    <h3 className="text-xl font-bold text-white mb-2">{category.title}</h3>
+                                                    <div className="h-0.5 w-12 mx-auto bg-white/50 rounded-full" />
+                                                </div>
+
+                                                <div className="flex flex-wrap gap-2 justify-center mb-6">
+                                                    {category.skills.slice(0, 5).map((skill) => (
+                                                        <span key={skill.name} className="px-3 py-1.5 bg-white/10 border border-white/20 text-gray-300 rounded-full text-xs font-medium hover:bg-white hover:text-black transition-all duration-300">
+                                                            {skill.name}
+                                                        </span>
+                                                    ))}
+                                                    {category.skills.length > 5 && (
+                                                        <span className="px-3 py-1.5 bg-white/10 border border-white/20 text-gray-400 rounded-full text-xs font-medium">
+                                                            +{category.skills.length - 5} more
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                <p className="text-xs text-gray-500 text-center group-hover:text-gray-400 transition-colors">
+                                                    Click to view proficiency
+                                                </p>
+                                            </CardContent>
+                                        </Card>
                                     </div>
 
-                                    <div className="flex flex-wrap gap-2 justify-center mb-6">
-                                        {category.skills.map((skill) => (
-                                            <span key={skill.name} className="px-3 py-1.5 bg-white/10 border border-white/20 text-gray-300 rounded-full text-sm font-medium hover:bg-white hover:text-black transition-all duration-300">
-                                                {skill.name}
-                                            </span>
-                                        ))}
-                                    </div>
+                                    {/* Back Side */}
+                                    <div className={`flip-card-back w-full h-full ${isFlipped ? '' : 'pointer-events-none'}`}>
+                                        <Card className="border-2 border-white/20 bg-black/95 text-white w-full h-full overflow-hidden shadow-[0_20px_50px_rgba(255,255,255,0.15)] flex flex-col">
+                                            <CardContent className="p-6 h-full flex flex-col justify-between overflow-hidden">
+                                                {/* Header */}
+                                                <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4 shrink-0">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-9 h-9 bg-gradient-to-br from-white to-gray-400 rounded-lg flex items-center justify-center">
+                                                            {getIcon(category.iconName)}
+                                                        </div>
+                                                        <div>
+                                                            <h4 className="text-sm font-bold text-white leading-tight">{category.title}</h4>
+                                                            <p className="text-[10px] text-gray-500">Proficiency Breakdown</p>
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setActiveIndex(null);
+                                                        }}
+                                                        className="text-gray-400 hover:text-white p-1 hover:bg-white/10 rounded-md transition-colors cursor-pointer"
+                                                        aria-label="Flip back"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
+                                                </div>
 
-                                    <p className="text-xs text-gray-500 text-center group-hover:text-gray-400 transition-colors">
-                                        Click to view proficiency
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    ))}
+                                                {/* Skill List */}
+                                                <div className="space-y-3.5 flex-grow overflow-y-auto pr-1 select-none custom-scrollbar">
+                                                    {category.skills.map((skill) => (
+                                                        <div key={skill.name} className="space-y-1">
+                                                            <div className="flex items-center justify-between">
+                                                                <span className="text-xs font-semibold text-white">{skill.name}</span>
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-white text-black">
+                                                                        {getSkillLevel(skill.proficiency)}
+                                                                    </span>
+                                                                    <span className="text-xs font-bold text-white">{skill.proficiency}%</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                                                                <div
+                                                                    className="h-full bg-gradient-to-r from-white to-gray-300 rounded-full transition-all duration-1000 ease-out"
+                                                                    style={{ width: `${skill.proficiency}%` }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 {/* Additional Note */}
@@ -82,63 +148,6 @@ const Skills = () => {
                     </div>
                 </div>
             </div>
-
-            {/* Popup Overlay */}
-            {activeIndex !== null && (
-                <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={() => setActiveIndex(null)}>
-                    <div className="bg-black border-2 border-white/20 rounded-2xl max-w-lg w-full shadow-2xl animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
-                        {/* Header */}
-                        <div className="flex items-center justify-between p-6 border-b border-white/10">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-gradient-to-br from-white to-gray-400 rounded-lg flex items-center justify-center">
-                                    {getIcon(SKILL_CATEGORIES[activeIndex].iconName)}
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-bold text-white">{SKILL_CATEGORIES[activeIndex].title}</h3>
-                                    <p className="text-xs text-gray-500">Proficiency Breakdown</p>
-                                </div>
-                            </div>
-                            <button onClick={() => setActiveIndex(null)} className="text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-colors">
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        {/* Content */}
-                        <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
-                            {SKILL_CATEGORIES[activeIndex].skills.map((skill, idx) => (
-                                <div key={skill.name} className="space-y-2" style={{ animation: `fadeIn 0.3s ease-out ${idx * 0.05}s both` }}>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium text-white">{skill.name}</span>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs font-bold px-2 py-1 rounded-full bg-white text-black">
-                                                {getSkillLevel(skill.proficiency)}
-                                            </span>
-                                            <span className="text-sm font-bold text-white">{skill.proficiency}%</span>
-                                        </div>
-                                    </div>
-                                    <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-                                        <div
-                                            className="h-full bg-gradient-to-r from-white to-gray-300 rounded-full transition-all duration-1000 ease-out"
-                                            style={{ width: `${skill.proficiency}%` }}
-                                        />
-                                    </div>
-                                    {skill.projects && (
-                                        <div className="flex flex-wrap gap-2 mt-2">
-                                            <span className="text-[10px] text-gray-500 uppercase tracking-tighter">Used in:</span>
-                                            {skill.projects.map((p: string) => (
-                                                <span key={p} className="text-[10px] text-gray-400 font-medium">
-                                                    • {p}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            )}
-
         </section>
     );
 };
