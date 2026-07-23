@@ -44,6 +44,16 @@ export default function Header() {
         return () => observer.disconnect();
     }, []);
 
+    // Lock body scroll when mobile menu is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isOpen]);
+
     const handleNavClick = (
         e: React.MouseEvent<HTMLAnchorElement>,
         href: string
@@ -79,6 +89,7 @@ export default function Header() {
     };
 
     return (
+        <>
         <header
             className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl transition-all duration-500 rounded-2xl border ${
                 isScrolled 
@@ -208,89 +219,130 @@ export default function Header() {
                         </button>
                     </div>
                 </div>
-
-                {/* Mobile Navigation */}
-                <div
-                    className={`lg:hidden absolute top-[calc(100%+8px)] left-0 right-0 transition-all duration-300 ease-out origin-top ${isOpen
-                        ? "opacity-100 scale-y-100 translate-y-0"
-                        : "opacity-0 scale-y-95 -translate-y-4 pointer-events-none"
-                        }`}
-                >
-                    <div className="bg-black/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-                        <ul className="px-4 py-4 space-y-1">
-                            {NAV_LINKS.map((link, index) => (
-                                <li
-                                    key={link.href}
-                                    className="transform transition-all duration-300"
-                                    style={{
-                                        transitionDelay: isOpen ? `${index * 50}ms` : '0ms',
-                                        opacity: isOpen ? 1 : 0,
-                                        transform: isOpen ? 'translateX(0)' : 'translateX(-20px)',
-                                    }}
-                                >
-                                    <a
-                                        href={link.href}
-                                        onClick={(e) => handleNavClick(e, link.href)}
-                                        className={`block px-5 py-4 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden group ${activeSection === link.href.substring(1)
-                                            ? "text-black shadow-lg bg-white"
-                                            : "text-gray-400 hover:text-black"
-                                            }`}
-                                    >
-                                        {/* Background on hover */}
-                                        <span
-                                            className={`absolute inset-0 bg-white transition-all duration-300 ${activeSection === link.href.substring(1)
-                                                ? "opacity-100"
-                                                : "opacity-0 group-hover:opacity-100"
-                                                }`}
-                                        />
-
-                                        {/* Icon indicator */}
-                                        <span className="relative z-10 flex items-center gap-3">
-                                            <span
-                                                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeSection === link.href.substring(1)
-                                                    ? "bg-black scale-100"
-                                                    : "bg-gray-600 scale-0 group-hover:scale-100 group-hover:bg-black"
-                                                    }`}
-                                            />
-                                            {link.label}
-                                        </span>
-                                    </a>
-                                </li>
-                            ))}
-
-                            {/* Mobile Download CV Button */}
-                            <li
-                                className="transform transition-all duration-300 pt-2"
-                                style={{
-                                    transitionDelay: isOpen ? `${NAV_LINKS.length * 50}ms` : '0ms',
-                                    opacity: isOpen ? 1 : 0,
-                                    transform: isOpen ? 'translateX(0)' : 'translateX(-20px)',
-                                }}
-                            >
-                                <button
-                                    onClick={handleDownloadCV}
-                                    className="w-full px-5 py-4 rounded-xl font-semibold bg-white text-black transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group"
-                                >
-                                    <svg
-                                        className="w-4 h-4 group-hover:animate-bounce"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                        />
-                                    </svg>
-                                    Download CV
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
             </nav>
         </header>
+
+            {/* Mobile Navigation — Full-screen Overlay (outside header for proper z-stacking) */}
+            {/* Backdrop */}
+            <div
+                className={`lg:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-40 transition-opacity duration-300 ${
+                    isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
+                onClick={() => setIsOpen(false)}
+            />
+
+            {/* Menu Panel */}
+            <div
+                className={`lg:hidden fixed inset-0 z-40 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                    isOpen
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 -translate-y-8 pointer-events-none"
+                }`}
+            >
+                <div className="bg-gradient-to-b from-black via-neutral-950 to-black h-full flex flex-col pt-28 pb-10 px-8">
+                    {/* Nav Links */}
+                    <nav className="flex flex-col gap-1">
+                        {NAV_LINKS.map((link, index) => {
+                            const isActive = activeSection === link.href.substring(1);
+                            const sectionNum = String(index + 1).padStart(2, '0');
+                            return (
+                                <a
+                                    key={link.href}
+                                    href={link.href}
+                                    onClick={(e) => handleNavClick(e, link.href)}
+                                    className="group relative block py-5 transition-all duration-500"
+                                    style={{
+                                        transitionDelay: isOpen ? `${100 + index * 70}ms` : '0ms',
+                                        opacity: isOpen ? 1 : 0,
+                                        transform: isOpen ? 'translateY(0)' : 'translateY(20px)',
+                                    }}
+                                >
+                                    {/* Active highlight bar */}
+                                    <span
+                                        className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-full transition-all duration-300 ${
+                                            isActive
+                                                ? "h-8 bg-white shadow-[0_0_12px_rgba(255,255,255,0.6)]"
+                                                : "h-0 bg-white/40 group-hover:h-5"
+                                        }`}
+                                    />
+
+                                    <div className="flex items-baseline gap-4 pl-5">
+                                        {/* Section number */}
+                                        <span
+                                            className={`text-[11px] font-mono tracking-widest transition-colors duration-300 ${
+                                                isActive ? "text-white" : "text-neutral-600 group-hover:text-neutral-400"
+                                            }`}
+                                        >
+                                            {sectionNum}
+                                        </span>
+
+                                        {/* Label */}
+                                        <span
+                                            className={`text-4xl font-bold tracking-tight transition-all duration-300 ${
+                                                isActive
+                                                    ? "text-white"
+                                                    : "text-neutral-500 group-hover:text-white group-hover:translate-x-2"
+                                            }`}
+                                            style={{ fontFamily: 'Genos, sans-serif' }}
+                                        >
+                                            {link.label}
+                                        </span>
+                                    </div>
+
+                                    {/* Separator */}
+                                    <span className="absolute bottom-0 left-5 right-5 h-px bg-white/[0.06]" />
+                                </a>
+                            );
+                        })}
+                    </nav>
+
+                    {/* Download CV */}
+                    <div
+                        className="mt-10 px-2 transition-all duration-500"
+                        style={{
+                            transitionDelay: isOpen ? `${100 + NAV_LINKS.length * 70}ms` : '0ms',
+                            opacity: isOpen ? 1 : 0,
+                            transform: isOpen ? 'translateY(0)' : 'translateY(20px)',
+                        }}
+                    >
+                        <button
+                            onClick={() => { handleDownloadCV(); setIsOpen(false); }}
+                            className="w-full group relative overflow-hidden px-6 py-4 rounded-2xl font-semibold text-sm bg-white text-black transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.15)] flex items-center justify-center gap-3 cursor-pointer"
+                        >
+                            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                            <svg
+                                className="w-4 h-4 transition-transform duration-300 group-hover:translate-y-0.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                />
+                            </svg>
+                            <span className="relative">Download CV</span>
+                        </button>
+                    </div>
+
+                    {/* Bottom decorative footer */}
+                    <div
+                        className="mt-auto px-5 transition-all duration-500"
+                        style={{
+                            transitionDelay: isOpen ? `${200 + NAV_LINKS.length * 70}ms` : '0ms',
+                            opacity: isOpen ? 1 : 0,
+                        }}
+                    >
+                        <div className="flex items-center gap-3 text-neutral-600 text-[10px] tracking-[0.3em] uppercase font-mono">
+                            <span className="h-px flex-1 bg-white/[0.06]" />
+                            Portfolio &copy; {new Date().getFullYear()}
+                            <span className="h-px flex-1 bg-white/[0.06]" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
     );
 }
