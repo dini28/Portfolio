@@ -9,6 +9,8 @@ interface UseStaggerRevealOptions {
     threshold?: number;
 }
 
+const MIN_VISIBLE_PX = 160;
+
 // Basic scroll reveal for single elements
 export const useScrollReveal = <T extends HTMLElement = HTMLElement>({ threshold = 0.1 }: UseScrollRevealOptions = {}) => {
     const ref = useRef<T>(null);
@@ -17,12 +19,15 @@ export const useScrollReveal = <T extends HTMLElement = HTMLElement>({ threshold
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting) {
+                // Elements much taller than their clipping container (e.g. inside a desktop window)
+                // can never reach a ratio threshold, so also reveal once a solid chunk is on screen.
+                const showsEnough = entry.intersectionRect.height >= MIN_VISIBLE_PX;
+                if (entry.isIntersecting && (entry.intersectionRatio >= threshold || showsEnough)) {
                     setIsVisible(true);
                     observer.disconnect(); // Only animate once
                 }
             },
-            { threshold }
+            { threshold: [0, threshold, 0.25, 0.5] }
         );
 
         const currentRef = ref.current;
@@ -30,11 +35,7 @@ export const useScrollReveal = <T extends HTMLElement = HTMLElement>({ threshold
             observer.observe(currentRef);
         }
 
-        return () => {
-            if (currentRef) {
-                observer.unobserve(currentRef);
-            }
-        };
+        return () => observer.disconnect();
     }, [threshold]);
 
     return { ref, isVisible };

@@ -1,162 +1,100 @@
 'use client';
 
-import { SOCIAL_LINKS, FOOTER_LINKS } from '../../data/social';
-import { ArrowUp, Quote } from 'lucide-react';
+import { ArrowUp, ArrowUpRight } from 'lucide-react';
+import { CONTACT_INFO, FOOTER_LINKS, SOCIAL_LINKS } from '../../data/social';
+import { scrollToSection } from '../common/SmoothScroll';
+import { GRID_TOGGLE_EVENT } from '../common/GridOverlay';
 
-const Footer = () => {
-    const currentYear = new Date().getFullYear();
-
-    const scrollToSection = (href: string) => {
-        if (href === '#') {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            return;
-        }
-        if (href.startsWith('#')) {
-            const element = document.querySelector(href);
-            if (element) {
-                const isDesktop = window.innerWidth >= 1024;
-                const headerOffset = isDesktop ? 20 : 80;
-                const elementPosition = element.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.scrollY - headerOffset;
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth',
-                });
-            }
-        }
-    };
-
+export default function Footer() {
     return (
-        <footer className="relative overflow-hidden border-t border-white/10 py-16 sm:py-24 text-gray-200">
-            {/* Ambient Spotlights */}
-            <div className="section-spotlight w-[600px] h-[400px] -top-30 -left-20 opacity-50" />
-            <div className="section-spotlight w-[600px] h-[400px] -bottom-30 -right-20 opacity-40" />
-
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-
-                {/* ── Main Asymmetrical Content Grid ── */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mb-16 pb-12 sm:pb-16 border-b border-white/10">
-
-                    {/* Left 5 Columns: Headline & Bio Statement */}
-                    <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
-                        <div className="space-y-4">
-                            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
-                                Let's Build <br />
-                                <span className="gradient-text">Something Exceptional.</span>
-                            </h2>
-
-                            <p className="text-gray-400 text-base sm:text-lg max-w-md leading-relaxed">
-                                Passionate frontend developer crafting fast, accessible, and high-performance web applications using React, TypeScript, and modern web engineering tools.
-                            </p>
-                        </div>
+        <footer className="relative overflow-hidden border-t hairline">
+            <div className="shell">
+                <div className="grid-12 gap-y-12 py-16 md:py-20">
+                    <div className="col-span-4 md:col-span-5">
+                        <p className="t-h3">
+                            Designed in Figma. <em className="text-accent">Built in code.</em>
+                        </p>
+                        <p className="t-body mt-4 max-w-sm">
+                            UI/UX designer and frontend developer based in Udaipur, India. Open to remote work.
+                        </p>
+                        <a href={`mailto:${CONTACT_INFO.email}`} className="text-link mt-6 text-white">
+                            {CONTACT_INFO.email}
+                            <ArrowUpRight className="h-4 w-4" />
+                        </a>
                     </div>
 
-                    {/* Right 7 Columns: Links & Philosophy Card */}
-                    <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-10">
+                    <nav className="col-span-2 md:col-span-3 md:col-start-7" aria-label="Footer">
+                        <h3 className="t-label">Sections</h3>
+                        <ul className="mt-5 space-y-3">
+                            {FOOTER_LINKS.map((link) => (
+                                <li key={link.href}>
+                                    <button
+                                        onClick={() => scrollToSection(link.href)}
+                                        className="cursor-pointer text-sm text-white/60 transition-colors hover:text-accent"
+                                    >
+                                        {link.label}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
 
-                        {/* Navigation Links */}
-                        <div className="space-y-4">
-                            <h4 className="text-xs uppercase tracking-[0.2em] font-bold text-gray-400">
-                                Navigation
-                            </h4>
-                            <ul className="space-y-3">
-                                {FOOTER_LINKS.map((link) => (
-                                    <li key={link.label}>
-                                        <button
-                                            onClick={() => scrollToSection(link.href)}
-                                            className="flex items-center gap-3 text-sm font-semibold text-gray-400 hover:text-white transition-all group cursor-pointer hover:translate-x-1 duration-300"
-                                        >
-                                            <span className="text-gray-500 group-hover:text-violet-400 transition-colors duration-300">
-                                                <link.icon className="w-4 h-4" />
-                                            </span>
-                                            <span>{link.label}</span>
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Social Connect Links */}
-                        <div className="space-y-4">
-                            <h4 className="text-xs uppercase tracking-[0.2em] font-bold text-gray-400">
-                                Connect
-                            </h4>
-                            <ul className="space-y-3">
-                                {SOCIAL_LINKS.map((link) => (
-                                    <li key={link.label}>
-                                        <a
-                                            href={link.href}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-3 text-sm font-semibold text-gray-400 hover:text-white transition-all group cursor-pointer hover:translate-x-1 duration-300"
-                                        >
-                                            <span className="text-gray-500 group-hover:text-violet-400 transition-colors duration-300">
-                                                <link.icon className="w-4 h-4" />
-                                            </span>
-                                            <span>{link.label}</span>
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Philosophy Card */}
-                        <div className="space-y-3 sm:col-span-2 mt-2">
-                            <h4 className="text-xs uppercase tracking-[0.2em] font-bold text-gray-400">
-                                Philosophy
-                            </h4>
-                            <div className="relative p-6 sm:p-7 rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl group hover:border-white/20 transition-all overflow-hidden">
-                                <Quote className="absolute -right-2 -bottom-2 w-24 h-24 text-white/[0.03] select-none pointer-events-none transform -rotate-12 transition-transform duration-500 group-hover:rotate-0" />
-                                <blockquote className="text-sm sm:text-base text-gray-300 italic leading-relaxed relative z-10 border-l-2 border-violet-400/80 pl-4 max-w-2xl">
-                                    "I believe learning doesn't end. There's always a better way to do things, and I'm always curious enough to go find it."
-                                </blockquote>
-                            </div>
-                        </div>
-
+                    <div className="col-span-2 md:col-span-3 md:col-start-10">
+                        <h3 className="t-label">Elsewhere</h3>
+                        <ul className="mt-5 space-y-3">
+                            {SOCIAL_LINKS.map((link) => (
+                                <li key={link.label}>
+                                    <a
+                                        href={link.href}
+                                        target={link.href.startsWith('http') ? '_blank' : undefined}
+                                        rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                                        className="text-sm text-white/60 transition-colors hover:text-accent"
+                                    >
+                                        {link.label}
+                                    </a>
+                                </li>
+                            ))}
+                            <li>
+                                <a
+                                    href={CONTACT_INFO.resume}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm text-white/60 transition-colors hover:text-accent"
+                                >
+                                    CV (PDF)
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
-                {/* ── Footer Bottom Bar ── */}
-                <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+                <p
+                    aria-hidden="true"
+                    className="select-none whitespace-nowrap text-center text-[clamp(3.5rem,16.5vw,15rem)] font-semibold leading-[0.8] tracking-[-0.065em] text-white/[0.06]"
+                >
+                    Dipesh Soni
+                </p>
 
-                    {/* Brand Meta */}
-                    <div className="flex items-center gap-3.5">
-                        <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center p-1.5">
-                            <img src="/logo.svg" alt="Logo" className="w-full h-full brightness-0 invert" />
-                        </div>
-                        <p className="text-xs text-gray-400 tracking-wider">
-                            &copy; {currentYear} | Built with care by <span className="text-white font-semibold">Dipesh Soni</span>
-                        </p>
-                    </div>
-
-                    {/* Technology Stack Pills */}
-                    <div className="flex flex-wrap items-center justify-center gap-2">
-                        {['React 19', 'TypeScript', 'Tailwind CSS', 'Vite'].map((tech) => (
-                            <span
-                                key={tech}
-                                className="px-2.5 py-1 text-[11px] uppercase tracking-wider bg-white/5 border border-white/10 rounded-md text-gray-400 font-semibold"
-                            >
-                                {tech}
-                            </span>
-                        ))}
-                    </div>
-
-                    {/* Back to Top Button */}
-                    <div>
+                <div className="flex flex-col gap-4 border-t hairline py-6 text-xs text-white/40 sm:flex-row sm:items-center sm:justify-between">
+                    <p>© {new Date().getFullYear()} Dipesh Soni. Designed and built by me.</p>
+                    <div className="flex items-center gap-6">
                         <button
-                            onClick={() => scrollToSection('#')}
-                            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg border border-white/10 bg-white/5 text-gray-300 hover:bg-white hover:text-black hover:border-white transition-all duration-300 group cursor-pointer"
+                            onClick={() => window.dispatchEvent(new Event(GRID_TOGGLE_EVENT))}
+                            className="hidden cursor-pointer items-center gap-2 transition-colors hover:text-accent md:inline-flex"
                         >
-                            <span>BACK TO TOP</span>
-                            <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
+                            <kbd className="rounded-[4px] border hairline px-1.5 py-0.5 font-mono text-[10px]">G</kbd>
+                            Toggle layout grid
+                        </button>
+                        <button
+                            onClick={() => scrollToSection('#top')}
+                            className="inline-flex cursor-pointer items-center gap-1.5 transition-colors hover:text-accent"
+                        >
+                            Back to top
+                            <ArrowUp className="h-3.5 w-3.5" />
                         </button>
                     </div>
-
                 </div>
-
             </div>
         </footer>
     );
-};
-
-export default Footer;
+}

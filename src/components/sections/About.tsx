@@ -1,258 +1,221 @@
 'use client';
 
 import { useState } from 'react';
-import { Code2, Rocket, Award, CheckCircle2, BookOpen } from 'lucide-react';
-import { useScrollReveal } from '../../hooks/useScrollReveal';
-import about from '../../assets/about.webp';
+import Image from 'next/image';
+import { PenTool, Terminal } from 'lucide-react';
+import Section from '../common/Section';
+import Reveal from '../common/Reveal';
+import dipeshImg from '../../assets/dipesh.webp';
+import { CONTACT_INFO } from '../../data/social';
+import { ACHIEVEMENTS, EDUCATION, EXPERIENCE_DATA } from '../../data/experience';
 
-type BioTabType = 'story' | 'expertise' | 'achievements';
+const VARIANTS = {
+    designer: {
+        label: 'Designer',
+        icon: PenTool,
+        story: [
+            'I started in Figma, learning how people read and move through an interface. Every project still begins there: user flows, wireframes, then a prototype people can actually click.',
+            'At Toba Tech I design interfaces and prototypes for client projects. As Design Lead of the CII Club, I run the visual identity across posters, decks and social media.',
+        ],
+        traits: ['User flows', 'Wireframes', 'Prototypes', 'Design systems', 'Visual identity'],
+    },
+    developer: {
+        label: 'Developer',
+        icon: Terminal,
+        story: [
+            'I learned to code so I could build what I designed. Today I take a screen from wireframe to a responsive React and TypeScript app, matched to the design down to the pixel.',
+            'Winning first place at the CodeFiesta 3.0 national hackathon pushed me past the frontend. Now I am learning backend properly, to take a product from Figma to production on my own.',
+        ],
+        traits: ['React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'Motion'],
+    },
+} as const;
 
-const About = () => {
-    const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal({ threshold: 0.1 });
-    const { ref: contentRef, isVisible: contentVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.2 });
-    const [activeBioTab, setActiveBioTab] = useState<BioTabType>('story');
+type Variant = keyof typeof VARIANTS;
+
+const PROPERTIES = [
+    { label: 'Based in', value: CONTACT_INFO.location },
+    { label: 'Currently', value: 'UI/UX Designer, Toba Tech' },
+    { label: 'Studying', value: `B.Tech CSE · CGPA ${EDUCATION.cgpa} · ${EDUCATION.graduation}` },
+    { label: 'Learning next', value: 'APIs, databases and scalable systems' },
+] as const;
+
+function Handles() {
+    const corner = 'absolute h-2.5 w-2.5 border border-accent bg-ink';
+    return (
+        <>
+            <span className={`${corner} -left-[5px] -top-[5px]`} />
+            <span className={`${corner} -right-[5px] -top-[5px]`} />
+            <span className={`${corner} -bottom-[5px] -left-[5px]`} />
+            <span className={`${corner} -bottom-[5px] -right-[5px]`} />
+        </>
+    );
+}
+
+export default function About() {
+    const [variant, setVariant] = useState<Variant>('designer');
+    const active = VARIANTS[variant];
+    const isDesigner = variant === 'designer';
 
     return (
-        <section
-            ref={sectionRef}
+        <Section
             id="about"
-            className="py-24 sm:py-32 relative overflow-hidden"
+            index="01"
+            label="About"
+            title={
+                <>
+                    Two disciplines, <em>one</em> pair of hands.
+                </>
+            }
         >
-            {/* Ambient Background Spotlights */}
-            <div className="section-spotlight w-[650px] h-[450px] top-10 right-0" />
-            <div className="section-spotlight w-[550px] h-[400px] bottom-0 left-10 opacity-40" />
-
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-                {/* Header */}
-                <div className={`text-center mb-16 sm:mb-20 transition-all duration-700 ease-out ${sectionVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                    <div className="fc-section-tag mb-4">
-                        <span className="fc-index">[ 02 / 05 ]</span>
-                        <span>· DEVELOPER PROFILE</span>
-                    </div>
-                    <h2 className="display-heading text-4xl sm:text-5xl lg:text-6xl mb-5">
-                        <span className="block text-white">Technical Foundation</span>
-                    </h2>
-                    <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-                        Bridging computer science fundamentals with modern frontend architecture to build high-performance web applications.
-                    </p>
-                </div>
-
-                {/* Main Dossier Grid */}
-                <div
-                    ref={contentRef}
-                    className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-start transition-all duration-1000 ease-out ${contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                >
-                    {/* Left Column: Terminal & Profile Frame (5 Cols) */}
-                    <div className="lg:col-span-5 space-y-5">
-                        {/* IDE / Terminal Header Card */}
-                        <div className="card-surface rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-gradient-to-b from-[#0f1512] to-[#0a0a0a]">
-
-                            {/* Profile Image Stage */}
-                            <div className="p-4 sm:p-5">
-                                <div className="relative rounded-2xl overflow-hidden bg-black border border-white/10 group">
-                                    <img
-                                        src={about.src}
-                                        alt="Dipesh Soni - Frontend Developer"
-                                        loading="lazy"
-                                        className="w-full h-auto object-cover grayscale-[15%] group-hover:grayscale-0 transition-all duration-700 brightness-95 group-hover:scale-105"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
-
-                                    {/* Overlay Award Badge */}
-                                    <div className="absolute bottom-3 left-3 right-3 p-3 rounded-xl border border-violet-500/30 bg-black/80 backdrop-blur-md flex items-center justify-between shadow-xl">
-                                        <div className="flex items-center gap-2.5">
-                                            <div className="w-8 h-8 rounded-lg bg-violet-500/20 border border-violet-500/30 flex items-center justify-center shrink-0">
-                                                <Award className="w-4 h-4 text-violet-400" />
-                                            </div>
-                                            <div>
-                                                <span className="text-xs font-extrabold text-white block">CODEFIESTA 3.0</span>
-                                                <span className="text-[10px] text-violet-300 font-semibold uppercase tracking-wider block">1st Place • National Hackathon Winner</span>
-                                            </div>
-                                        </div>
-                                    </div>
+            <div className="grid-12 gap-y-14">
+                <Reveal className="col-span-4 md:col-span-5">
+                    <figure>
+                        <div className="relative">
+                            <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--r-lg)] bg-surface">
+                                <Image
+                                    src={dipeshImg}
+                                    alt="Portrait of Dipesh Soni in Udaipur"
+                                    fill
+                                    placeholder="blur"
+                                    sizes="(max-width: 768px) 100vw, 480px"
+                                    className={`object-cover object-[50%_30%] transition-[filter,transform] duration-700 ease-out ${
+                                        isDesigner ? 'scale-[1.03] grayscale' : 'scale-100 grayscale-0'
+                                    }`}
+                                />
+                                <div
+                                    aria-hidden="true"
+                                    className={`absolute inset-x-4 bottom-4 rounded-[var(--r-md)] bg-ink/85 p-4 font-mono text-[11px] leading-5 backdrop-blur-md transition-opacity duration-500 ${
+                                        isDesigner ? 'opacity-0' : 'opacity-100'
+                                    }`}
+                                >
+                                    <span className="text-white/40">const</span> <span className="text-white">dipesh</span>{' '}
+                                    <span className="text-white/40">=</span> {'{'}
+                                    <br />
+                                    &nbsp;&nbsp;role: <span className="text-accent">&apos;design + frontend&apos;</span>,
+                                    <br />
+                                    &nbsp;&nbsp;ships: <span className="text-accent">true</span>
+                                    <br />
+                                    {'}'}
                                 </div>
                             </div>
+                            <div
+                                aria-hidden="true"
+                                className={`pointer-events-none absolute inset-0 rounded-[var(--r-lg)] border border-accent transition-opacity duration-500 ${
+                                    isDesigner ? 'opacity-100' : 'opacity-0'
+                                }`}
+                            >
+                                <Handles />
+                                <span className="absolute -top-7 left-0 rounded-[var(--r-sm)] bg-accent px-1.5 py-0.5 font-mono text-[10px] font-semibold text-ink">
+                                    Dipesh · Frame
+                                </span>
+                                <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-mono text-[10px] text-accent">
+                                    480 × 600
+                                </span>
+                            </div>
+                        </div>
+                        <figcaption className="mt-10 flex items-center justify-between font-mono text-xs text-white/40">
+                            <span>Udaipur, Rajasthan</span>
+                            <span>IST · UTC+5:30</span>
+                        </figcaption>
+                    </figure>
+                </Reveal>
+
+                <Reveal className="col-span-4 md:col-span-6 md:col-start-7" delay={120}>
+                    <blockquote className="t-serif text-[clamp(1.6rem,2.6vw,2.25rem)] leading-[1.15] text-white">
+                        &ldquo;Learning doesn&apos;t end. There&apos;s always a better way to do things, and I&apos;m curious
+                        enough to go find it.&rdquo;
+                    </blockquote>
+
+                    <div className="mt-10 flex items-center justify-between gap-4 rounded-[14px] border hairline bg-surface p-1.5 pl-4">
+                        <span className="t-label">Variant</span>
+                        <div role="radiogroup" aria-label="Read my story as" className="flex gap-1">
+                            {(Object.keys(VARIANTS) as Variant[]).map((key) => {
+                                const { label, icon: Icon } = VARIANTS[key];
+                                const checked = key === variant;
+                                return (
+                                    <button
+                                        key={key}
+                                        type="button"
+                                        role="radio"
+                                        aria-checked={checked}
+                                        onClick={() => setVariant(key)}
+                                        className={`flex h-10 cursor-pointer items-center gap-2 rounded-[var(--r-btn)] px-4 text-sm font-medium transition-colors duration-300 ${
+                                            checked ? 'bg-accent text-ink' : 'text-white/60 hover:text-white'
+                                        }`}
+                                    >
+                                        <Icon className="h-4 w-4" />
+                                        {label}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
-                    {/* Right Column: Interactive Bio Deck (7 Cols) */}
-                    <div className="lg:col-span-7 flex flex-col justify-between h-full">
-                        <div className="card-surface rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl bg-gradient-to-b from-[#0f1512] to-[#0a0a0a]">
-
-                            {/* Bio Deck Navigation Tabs */}
-                            <div className="flex border-b border-white/[0.08] mb-6 gap-2 sm:gap-4 overflow-x-auto pb-1">
-                                <button
-                                    onClick={() => setActiveBioTab('story')}
-                                    className={`pb-3.5 px-1 text-xs sm:text-sm font-semibold transition-all relative flex items-center gap-2 whitespace-nowrap ${activeBioTab === 'story'
-                                        ? 'text-violet-400'
-                                        : 'text-gray-400 hover:text-gray-200'
-                                        }`}
-                                >
-                                    <span>Engineering Story</span>
-                                    {activeBioTab === 'story' && (
-                                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-violet-400 rounded-full" />
-                                    )}
-                                </button>
-                                <button
-                                    onClick={() => setActiveBioTab('expertise')}
-                                    className={`pb-3.5 px-1 text-xs sm:text-sm font-semibold transition-all relative flex items-center gap-2 whitespace-nowrap ${activeBioTab === 'expertise'
-                                        ? 'text-violet-400'
-                                        : 'text-gray-400 hover:text-gray-200'
-                                        }`}
-                                >
-                                    <span>Stack &amp; Horizon</span>
-                                    {activeBioTab === 'expertise' && (
-                                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-violet-400 rounded-full" />
-                                    )}
-                                </button>
-                                <button
-                                    onClick={() => setActiveBioTab('achievements')}
-                                    className={`pb-3.5 px-1 text-xs sm:text-sm font-semibold transition-all relative flex items-center gap-2 whitespace-nowrap ${activeBioTab === 'achievements'
-                                        ? 'text-violet-400'
-                                        : 'text-gray-400 hover:text-gray-200'
-                                        }`}
-                                >
-                                    <span>Key Milestones</span>
-                                    {activeBioTab === 'achievements' && (
-                                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-violet-400 rounded-full" />
-                                    )}
-                                </button>
-                            </div>
-
-                            {/* Tab 1: Engineering Story */}
-                            {activeBioTab === 'story' && (
-                                <div className="space-y-5 animate-in fade-in duration-300">
-                                    <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white flex items-center gap-2">
-                                        <span>Crafting High-Precision Web Interfaces</span>
-                                    </h3>
-                                    <div className="space-y-4 text-gray-300 text-sm sm:text-[0.93rem] leading-[1.8]">
-                                        <p>
-                                            <strong className="text-white font-semibold">
-                                                I build modern web experiences by bridging design, frontend engineering, and full-stack development.
-                                            </strong>
-                                            My journey began with Figma, where I learned the fundamentals of user experience and interface design before turning those ideas into responsive, pixel-perfect applications using React, TypeScript, and modern web technologies.
-                                        </p>
-
-                                        <p>
-                                            Winning <strong className="text-white font-semibold">1st Place at CODEFIESTA 3.0 National Hackathon</strong> pushed me beyond frontend development. Under intense pressure, I adapted to backend development, collaborated across the full stack, and delivered a complete working solution—an experience that reshaped my approach to software engineering.
-                                        </p>
-
-                                        <p>
-                                            Today, I'm focused on becoming a full-stack developer by mastering backend architecture, APIs, databases, and scalable systems, with the goal of delivering complete web products from Figma designs to production deployment.
-                                        </p>
-
-                                    </div>
-
-                                    {/* Principles Pills */}
-                                    <div className="pt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                        <div className="p-3 rounded-xl bg-violet-500/[0.04] border border-violet-500/[0.12] flex items-center gap-2.5">
-                                            <CheckCircle2 className="w-4 h-4 text-violet-400 shrink-0" />
-                                            <span className="text-xs text-gray-300 font-semibold">60 FPS Fluidity</span>
-                                        </div>
-                                        <div className="p-3 rounded-xl bg-violet-500/[0.04] border border-violet-500/[0.12] flex items-center gap-2.5">
-                                            <CheckCircle2 className="w-4 h-4 text-violet-400 shrink-0" />
-                                            <span className="text-xs text-gray-300 font-semibold">Strict Typing (TS)</span>
-                                        </div>
-                                        <div className="p-3 rounded-xl bg-violet-500/[0.04] border border-violet-500/[0.12] flex items-center gap-2.5">
-                                            <CheckCircle2 className="w-4 h-4 text-violet-400 shrink-0" />
-                                            <span className="text-xs text-gray-300 font-semibold">Clean Architecture</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Tab 2: Stack & Horizon */}
-                            {activeBioTab === 'expertise' && (
-                                <div className="space-y-6 animate-in fade-in duration-300">
-                                    {/* Primary Core */}
-                                    <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.08]">
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <div className="w-9 h-9 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
-                                                <Code2 className="w-4.5 h-4.5" />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-white text-sm">Primary Engineering Stack</h4>
-                                                <span className="text-xs text-gray-400">Battle-tested in production</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            {['React 19', 'TypeScript', 'JavaScript (ES6+)', 'Tailwind CSS', 'HTML5 & CSS3', 'Git / GitHub', 'State Management'].map((tech) => (
-                                                <span key={tech} className="px-3 py-1.5 rounded-xl bg-violet-950/40 border border-violet-500/30 code-mono text-xs text-violet-300 font-medium">
-                                                    {tech}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Next-Gen Horizon */}
-                                    <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.08]">
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                                                <Rocket className="w-4.5 h-4.5" />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-white text-sm">Active Focus &amp; Expansion</h4>
-                                                <span className="text-xs text-gray-400">Next-gen frameworks &amp; tooling</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            {['Next.js 15 (App Router)', 'Node.js', 'Express.js', 'MongoDB', 'Firebase', 'Vite & Build Tools', 'Lighthouse Optimization'].map((tech) => (
-                                                <span key={tech} className="px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 code-mono text-xs text-gray-300 font-medium">
-                                                    {tech}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Tab 3: Key Milestones */}
-                            {activeBioTab === 'achievements' && (
-                                <div className="space-y-4 animate-in fade-in duration-300">
-                                    {/* CODEFIESTA Card */}
-                                    <div className="p-5 rounded-2xl bg-gradient-to-r from-violet-950/30 via-white/[0.02] to-transparent border border-violet-500/30 flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-violet-500/20 border border-violet-500/40 flex items-center justify-center text-violet-400 shrink-0 mt-0.5">
-                                            <Award className="w-5 h-5" />
-                                        </div>
-                                        <div>
-                                            <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
-                                                <h4 className="text-white font-bold text-base">CODEFIESTA 3.0 Hackathon Winner</h4>
-                                                <span className="code-mono text-[10px] px-2 py-0.5 rounded-md bg-violet-500/20 text-violet-300 border border-violet-500/30 font-bold uppercase">
-                                                    1st Place National
-                                                </span>
-                                            </div>
-                                            <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
-                                                Secured 1st rank at the CODEFIESTA 3.0 National Hackathon out of dozens of participating developer teams by building and pitching an end-to-end full-stack solution under intense time limits.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* B.Tech CSE Degree Card */}
-                                    <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.08] flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-gray-300 shrink-0 mt-0.5">
-                                            <BookOpen className="w-5 h-5" />
-                                        </div>
-                                        <div>
-                                            <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
-                                                <h4 className="text-white font-bold text-base">Bachelor of Technology (B.Tech in CSE)</h4>
-                                                <span className="code-mono text-[10px] px-2 py-0.5 rounded-md bg-white/[0.04] text-gray-400 border border-white/10 uppercase">
-                                                    Computer Science
-                                                </span>
-                                            </div>
-                                            <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
-                                                Studying core computer science disciplines including Data Structures &amp; Algorithms, Object-Oriented Programming, Operating Systems, Computer Networks, and Database Systems.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
+                    <div key={variant} className="fade-swap mt-8 space-y-5" aria-live="polite">
+                        {active.story.map((paragraph) => (
+                            <p key={paragraph} className="t-body text-base">
+                                {paragraph}
+                            </p>
+                        ))}
+                        <ul className="flex flex-wrap gap-2 pt-2" aria-label={`${active.label} skills`}>
+                            {active.traits.map((trait) => (
+                                <li key={trait} className="chip">
+                                    {trait}
+                                </li>
+                            ))}
+                        </ul>
                     </div>
-                </div>
+
+                    <dl className="mt-10 border-t hairline">
+                        {PROPERTIES.map((row) => (
+                            <div key={row.label} className="grid grid-cols-[8.5rem_1fr] gap-4 border-b hairline py-3.5 text-sm">
+                                <dt className="text-white/45">{row.label}</dt>
+                                <dd className="text-white">{row.value}</dd>
+                            </div>
+                        ))}
+                    </dl>
+                </Reveal>
             </div>
-        </section>
+
+            <div className="grid-12 mt-24 gap-y-16 md:mt-32">
+                <Reveal className="col-span-4 md:col-span-6">
+                    <h3 className="t-label">Experience</h3>
+                    <ol className="mt-5 border-t hairline">
+                        {EXPERIENCE_DATA.map((item) => (
+                            <li key={`${item.role}-${item.organization}`} className="border-b hairline py-5">
+                                <div className="flex items-baseline justify-between gap-4">
+                                    <h4 className="font-semibold tracking-tight text-white">{item.role}</h4>
+                                    <span className="shrink-0 font-mono text-xs tabular-nums text-white/45">
+                                        {item.period}
+                                    </span>
+                                </div>
+                                <p className="mt-1 flex items-center gap-2 text-sm text-white/55">
+                                    {item.organization}
+                                    {item.current && <span className="tag">Now</span>}
+                                </p>
+                            </li>
+                        ))}
+                    </ol>
+                </Reveal>
+
+                <Reveal className="col-span-4 md:col-span-6" delay={120}>
+                    <h3 className="t-label">Recognition</h3>
+                    <ol className="mt-5 border-t hairline">
+                        {ACHIEVEMENTS.map((item) => (
+                            <li key={item.title} className="grid grid-cols-[5.5rem_1fr] gap-4 border-b hairline py-5">
+                                <span className="t-serif text-3xl leading-none text-accent">{item.rank}</span>
+                                <div>
+                                    <h4 className="font-semibold tracking-tight text-white">{item.title}</h4>
+                                    <p className="mt-1 text-sm text-white/55">
+                                        {item.organizer} · {item.date}
+                                    </p>
+                                    <p className="mt-2 text-sm leading-relaxed text-white/45">{item.detail}</p>
+                                </div>
+                            </li>
+                        ))}
+                    </ol>
+                </Reveal>
+            </div>
+        </Section>
     );
-};
-
-export default About;
-
+}

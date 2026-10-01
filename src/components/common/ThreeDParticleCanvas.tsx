@@ -23,14 +23,33 @@ export const ThreeDParticleCanvas = () => {
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
+        // Honor reduced motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+            return;
+        }
+
         let animationFrameId: number;
-        let width = (canvas.width = canvas.offsetWidth);
-        let height = (canvas.height = canvas.offsetHeight);
+        let width = 0;
+        let height = 0;
+
+        const sizeCanvas = () => {
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            width = canvas.offsetWidth;
+            height = canvas.offsetHeight;
+            canvas.width = Math.round(width * dpr);
+            canvas.height = Math.round(height * dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        };
+
+        sizeCanvas();
 
         const particles: Particle[] = [];
-        // Calculate particle count dynamically based on screen size
+        // Calculate particle count dynamically based on screen size (lighter on mobile)
         const getParticleCount = (w: number, h: number) => {
-            return Math.min(80, Math.floor((w * h) / 25000));
+            const isMobile = w < 768;
+            if (isMobile) return Math.min(30, Math.floor((w * h) / 40000));
+            return Math.min(75, Math.floor((w * h) / 25000));
         };
         
         let particleCount = getParticleCount(width, height);
@@ -41,20 +60,30 @@ export const ThreeDParticleCanvas = () => {
         let mouseY = 0;
         let isMouseOver = false;
 
+        // Classic monochrome stardust palette: pure white, silver, and subtle zinc
+        const MONOCHROME_COLORS = [
+            'rgba(255, 255, 255, ',
+            'rgba(125, 211, 252, ',
+            'rgba(255, 255, 255, ',
+            'rgba(255, 255, 255, ',
+            'rgba(125, 211, 252, '
+        ];
+
         // Initialize particles in a 3D box
         const initParticles = () => {
             particles.length = 0;
             particleCount = getParticleCount(width, height);
             for (let i = 0; i < particleCount; i++) {
+                const colorBase = MONOCHROME_COLORS[i % MONOCHROME_COLORS.length];
                 particles.push({
                     x: (Math.random() - 0.5) * width * 1.1,
                     y: (Math.random() - 0.5) * height * 1.1,
                     z: (Math.random() - 0.5) * 600, // Depth range: -300 to 300
-                    vx: (Math.random() - 0.5) * 0.4,
-                    vy: (Math.random() - 0.5) * 0.4,
-                    vz: (Math.random() - 0.5) * 0.4,
-                    radius: Math.random() * 1.8 + 0.8,
-                    color: 'rgba(255, 255, 255, 0.45)'
+                    vx: (Math.random() - 0.5) * 0.35,
+                    vy: (Math.random() - 0.5) * 0.35 - 0.08, // Subtle upward drift like spores
+                    vz: (Math.random() - 0.5) * 0.35,
+                    radius: Math.random() * 2.2 + 1.2,
+                    color: colorBase
                 });
             }
         };
@@ -86,9 +115,7 @@ export const ThreeDParticleCanvas = () => {
         };
 
         const handleResize = () => {
-            if (!canvasRef.current) return;
-            width = canvasRef.current.width = canvasRef.current.offsetWidth;
-            height = canvasRef.current.height = canvasRef.current.offsetHeight;
+            sizeCanvas();
             initParticles();
         };
 
@@ -198,7 +225,7 @@ export const ThreeDParticleCanvas = () => {
                     // Only connect if close in both 2D and 3D depth
                     if (dist2D < 100 && distZ < 120) {
                         const alpha = (1 - dist2D / 100) * 0.12 * Math.min(p1.scale, p2.scale);
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+                        ctx.strokeStyle = `rgba(125, 211, 252, ${alpha})`;
                         ctx.beginPath();
                         ctx.moveTo(p1.x, p1.y);
                         ctx.lineTo(p2.x, p2.y);
@@ -207,17 +234,16 @@ export const ThreeDParticleCanvas = () => {
                 }
             }
 
-            // Draw particles
+            // Draw voxel square particles
             projected.forEach((p) => {
                 if (p.x < 0 || p.x > width || p.y < 0 || p.y > height) return;
 
-                // Base opacity scales with depth (scale ranges from ~0.5 to ~1.8)
-                const opacity = Math.min(0.6, Math.max(0.08, (p.scale - 0.45) * 0.4));
-                ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                // Base opacity scales with depth
+                const opacity = Math.min(0.75, Math.max(0.12, (p.scale - 0.45) * 0.45));
+                ctx.fillStyle = `${p.color}${opacity})`;
 
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, Math.max(0.4, p.radius), 0, Math.PI * 2);
-                ctx.fill();
+                const size = Math.max(1.5, p.radius * 1.5);
+                ctx.fillRect(p.x - size / 2, p.y - size / 2, size, size);
             });
 
             animationFrameId = requestAnimationFrame(render);

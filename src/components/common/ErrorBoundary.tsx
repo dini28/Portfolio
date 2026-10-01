@@ -32,7 +32,7 @@ class ErrorBoundary extends Component<Props, State> {
                             <span className="text-4xl">⚡</span>
                         </div>
                         <h1
-                            className="text-3xl font-bold text-white mb-4 font-display"
+                            className="text-3xl font-bold text-white mb-4"
                         >
                             Something went wrong
                         </h1>

@@ -1,208 +1,324 @@
 'use client';
 
-import { useEffect, useState, useRef, useMemo } from 'react';
-import { Code2, ArrowRight } from 'lucide-react';
-import { useMagnetic } from '../../hooks/useMagnetic';
+import { useCallback, useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
+import Image from 'next/image';
+import { ArrowDown, ArrowRight, ChevronsLeftRight, CodeXml, FileText } from 'lucide-react';
 import dipeshImg from '../../assets/dipesh.webp';
+import { CONTACT_INFO } from '../../data/social';
+import { PROJECTS_DATA } from '../../data/projects';
+import { EDUCATION } from '../../data/experience';
+import { scrollToSection } from '../common/SmoothScroll';
+import { useLocalTime } from '../../hooks/useLocalTime';
 
-const Hero = () => {
-    const [textState, setTextState] = useState({
-        text: '',
-        index: 0,
-        charIndex: 0,
-        isDeleting: false
-    });
-    const [isVisible, setIsVisible] = useState(false);
-    const heroRef = useRef<HTMLElement>(null);
-    const viewWorkRef = useMagnetic<HTMLButtonElement>(0.2);
+type Mode = 'design' | 'build';
 
-    const roles = useMemo(() => [
-        'UI/UX Designer @ Toba Tech',
-        'Frontend Developer',
-        'React & TypeScript Engineer',
-        'Freelance Web Designer'
-    ], []);
+const FACTS = [
+    { value: '1st', label: 'CodeFiesta 3.0 national hackathon' },
+    { value: String(PROJECTS_DATA.length).padStart(2, '0'), label: 'Personal projects, designed and built solo' },
+    { value: EDUCATION.cgpa, label: 'CGPA, B.Tech Computer Science' },
+    { value: '< 24h', label: 'Typical reply to a message' },
+] as const;
 
-    useEffect(() => {
-        const timer = setTimeout(() => setIsVisible(true), 100);
-        return () => clearTimeout(timer);
-    }, []);
+const KEY_STEP = 5;
+// Where the split settles after the intro, as a fraction of the headline's own width.
+const INTRO_BIAS = 0.46;
 
-    useEffect(() => {
-        const { index, charIndex, isDeleting } = textState;
-        const currentRole = roles[index];
-        const typeSpeed = isDeleting ? 40 : 80;
+function SpecLabel({ children, className = '' }: { children: ReactNode; className?: string }) {
+    return (
+        <span
+            className={`pointer-events-none absolute whitespace-nowrap font-mono text-[10px] font-medium leading-none tracking-normal text-accent ${className}`}
+        >
+            {children}
+        </span>
+    );
+}
 
-        const nextStep = () => {
-            if (!isDeleting && charIndex < currentRole.length) {
-                setTextState(prev => ({
-                    ...prev,
-                    text: currentRole.substring(0, charIndex + 1),
-                    charIndex: charIndex + 1
-                }));
-            } else if (isDeleting && charIndex > 0) {
-                setTextState(prev => ({
-                    ...prev,
-                    text: currentRole.substring(0, charIndex - 1),
-                    charIndex: charIndex - 1
-                }));
-            } else if (!isDeleting && charIndex === currentRole.length) {
-                setTimeout(() => setTextState(prev => ({ ...prev, isDeleting: true })), 2200);
-            } else if (isDeleting && charIndex === 0) {
-                setTextState(prev => ({
-                    ...prev,
-                    isDeleting: false,
-                    index: (index + 1) % roles.length
-                }));
-            }
-        };
+function Placeholder({ label }: { label: string }) {
+    return (
+        <>
+            <svg className="absolute inset-0 h-full w-full text-accent/40" preserveAspectRatio="none" viewBox="0 0 100 100">
+                <line x1="0" y1="0" x2="100" y2="100" stroke="currentColor" vectorEffect="non-scaling-stroke" />
+                <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" vectorEffect="non-scaling-stroke" />
+            </svg>
+            <SpecLabel className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-ink px-1.5 py-1">{label}</SpecLabel>
+        </>
+    );
+}
 
-        const timer = setTimeout(nextStep, typeSpeed);
-        return () => clearTimeout(timer);
-    }, [textState, roles]);
-
-    const scrollToSection = (id: string) => {
-        document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
-    };
-
-    const techStackStrip = [
-        { name: 'UI/UX Design', label: 'Product & Design', status: 'Figma & Design Systems' },
-        { name: 'React 19', label: 'UI Architecture', status: 'Primary Stack' },
-        { name: 'TypeScript', label: 'Type Safety', status: 'Strict Mode' },
-        { name: 'Tailwind CSS', label: 'Design System', status: 'Utility First' },
-    ];
+// Both layers render this exact markup so the split lines up pixel for pixel; only paint differs.
+function Headline({ mode }: { mode: Mode }) {
+    const design = mode === 'design';
+    const ink = design ? 'hero-outline' : 'text-white';
+    const frame = design ? 'hero-frame' : '';
+    const pill = 'relative inline-block h-[0.74em] w-[1.7em] shrink-0 rounded-full';
 
     return (
-        <section
-            ref={heroRef}
-            id="hero"
-            className="relative min-h-[100dvh] flex items-center overflow-hidden py-28 sm:py-36"
-        >
-            {/* Ambient Background Glows */}
-            <div className="section-spotlight w-[900px] h-[520px] -top-10 left-1/2 -translate-x-1/2" />
-            <div className="section-spotlight w-[550px] h-[550px] top-1/3 -left-32 opacity-50" />
-
-            <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-8 lg:px-12">
-                <div
-                    className={`grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center transition-all duration-[1000ms] ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                >
-                    {/* Left Column: Bio & Action */}
-                    <div className="lg:col-span-7 space-y-7">
-
-                        {/* Firecrawl Style Section Tag & Badges */}
-                        <div className="space-y-3">
-                            <div className="fc-section-tag">
-                                <span className="fc-index">[ 01 / 05 ]</span>
-                                <span>· INTRODUCING DIPESH</span>
-                            </div>
-
-                            <div className="flex flex-wrap items-center gap-2.5 pt-1">
-                                <div className="fc-pill-badge">
-                                    <span className="w-2 h-2 rounded-xs bg-violet-400 animate-pulse" />
-                                    <span className="text-violet-300 font-semibold">{`Available for Freelancing`}</span>
-                                </div>
-
-                                <div className="fc-pill-badge">
-                                    <span>UI/UX Designer @ Toba Tech</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Main Headline */}
-                        <h1 className="display-heading text-5xl sm:text-6xl lg:text-7xl xl:text-[5.25rem] tracking-tight">
-                            <span className="block text-white font-extrabold">Hello, I'm</span>
-                            <span className="block mt-1 gradient-text font-black">Dipesh Soni</span>
-                        </h1>
-
-                        {/* Animated Role Cycler */}
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-violet-500/[0.06] border border-violet-500/20 shadow-inner">
-                                <Code2 className="w-4.5 h-4.5 text-violet-400 shrink-0" />
-                                <span className="text-sm sm:text-base text-gray-200 font-semibold code-mono">{textState.text}</span>
-                                <span className="w-0.5 h-4 bg-violet-400 inline-block" />
-                            </div>
-                        </div>
-
-                        {/* Value Prop Subtitle */}
-                        <p className="text-gray-400 text-base sm:text-lg leading-relaxed max-w-xl">
-                            Currently working as a <strong className="text-white font-semibold">UI/UX Designer at Toba Tech</strong>. Combining user-centered interface design with high-precision React &amp; TypeScript frontend engineering.
-                        </p>
-
-                        {/* Action Buttons */}
-                        <div className="flex flex-wrap items-center gap-4 pt-2">
-                            <button
-                                ref={viewWorkRef}
-                                onClick={() => scrollToSection('#projects')}
-                                className="vite-btn-primary"
-                            >
-                                <span>Explore My Work</span>
-                                <ArrowRight className="w-4 h-4" />
-                            </button>
-                            <button
-                                onClick={() => scrollToSection('#contact')}
-                                className="vite-btn-secondary"
-                            >
-                                <span>Hire for Freelance</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Right Column: Terminal Showcase Image Layout */}
-                    <div className="lg:col-span-5 relative">
-                        <div className="relative w-full max-w-md mx-auto group">
-                            {/* Multi-layered Ambient Backlight Glow */}
-                            <div className="absolute -inset-4 bg-gradient-to-tr from-violet-600/25 via-indigo-500/15 to-purple-500/20 rounded-3xl blur-2xl opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 pointer-events-none" />
-                            <div className="absolute -inset-1 bg-gradient-to-b from-violet-400/30 via-indigo-500/10 to-transparent rounded-[2rem] blur-md opacity-40 group-hover:opacity-75 transition-all duration-500 pointer-events-none" />
-
-                            {/* Main Card Container with Gradient Border */}
-                            <div className="relative p-1 rounded-3xl bg-gradient-to-b from-violet-400/20 via-indigo-500/10 to-purple-600/30 shadow-2xl transition-transform duration-500">
-                                <div className="relative rounded-[1.4rem] overflow-hidden bg-[#09090b] border border-white/10">
-
-                                    {/* Hero Showcase Image */}
-                                    <div className="relative overflow-hidden group/img">
-                                        <img
-                                            src={dipeshImg.src}
-                                            alt="Dipesh Soni Developer Portfolio"
-                                            className="w-full h-auto object-cover rounded-b-[1.3rem] transition-transform duration-700"
-                                            loading="eager"
-                                        />
-                                        {/* Subtle Overlay Gradient for Depth */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b]/80 via-transparent to-transparent pointer-events-none opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Bottom Tech Capability Strip */}
-                <div
-                    className={`mt-20 sm:mt-28 transition-all duration-1000 delay-300 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-                >
-                    <div className="text-center mb-5">
-                        <span className="text-[11px] font-mono text-gray-500 uppercase tracking-[0.24em]">
-                            Core Capability &amp; Stack
+        <div className="shell py-10 md:py-14">
+            <div className="text-[clamp(2.75rem,15vw,4.75rem)] font-semibold md:text-[clamp(3.1rem,10.4vw,9.75rem)] leading-[0.9] tracking-[-0.045em]">
+                <div className="flex items-center gap-[0.14em] whitespace-nowrap">
+                    <span data-word className={`relative ${ink} ${frame}`}>
+                        I design
+                        {design && <SpecLabel className="-top-5 left-0 hidden md:block">Geom · Semibold · −4.5%</SpecLabel>}
+                    </span>
+                    {design ? (
+                        <span className={`${pill} border border-dashed border-accent/60`}>
+                            <Placeholder label="portrait.webp" />
                         </span>
-                    </div>
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 rounded-2xl overflow-hidden border border-white/10 shadow-lg">
-                        {techStackStrip.map((item) => (
-                            <div key={item.name} className="bg-[#07060f] p-5 sm:p-6 text-center hover:bg-violet-500/[0.04] transition-colors group">
-                                <div className="code-mono text-[10px] text-gray-500 uppercase tracking-[0.18em] block mb-2">
-                                    {item.label}
-                                </div>
-                                <div className="text-lg sm:text-xl font-bold text-white group-hover:text-violet-300 transition-colors tracking-tight">
-                                    {item.name}
-                                </div>
-                                <div className="mt-1.5 text-xs text-gray-500">{item.status}</div>
-                            </div>
-                        ))}
+                    ) : (
+                        <span className={`${pill} overflow-hidden bg-surface`}>
+                            <Image
+                                src={dipeshImg}
+                                alt=""
+                                fill
+                                priority
+                                placeholder="blur"
+                                sizes="(max-width: 768px) 90px, 240px"
+                                className="object-cover object-[50%_38%]"
+                            />
+                        </span>
+                    )}
+                </div>
+
+                <div className="flex items-center gap-[0.14em] whitespace-nowrap md:ml-[calc(25%+var(--gutter)/4)]">
+                    {design ? (
+                        <span className={`${pill} border border-dashed border-accent/60`}>
+                            <Placeholder label="<Component />" />
+                        </span>
+                    ) : (
+                        <span className={`${pill} grid place-items-center bg-accent text-ink`}>
+                            <CodeXml className="h-[0.42em] w-[0.42em]" strokeWidth={2.25} />
+                        </span>
+                    )}
+                    <span data-word className={`relative ${ink} ${frame}`}>
+                        &amp; build
+                    </span>
+                </div>
+
+                <div className="flex justify-start whitespace-nowrap md:justify-end">
+                    <span
+                        data-word
+                        className={`t-serif relative pr-[0.06em] text-[0.98em] tracking-[-0.03em] ${design ? 'hero-outline' : 'text-accent'} ${frame}`}
+                    >
+                        interfaces.
+                        {design && (
+                            <SpecLabel className="-bottom-5 right-0 hidden md:block">Genos · Medium Italic</SpecLabel>
+                        )}
+                    </span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default function Hero() {
+    const stageRef = useRef<HTMLDivElement>(null);
+    const handleRef = useRef<HTMLDivElement>(null);
+    const target = useRef(100);
+    const current = useRef(100);
+    const frame = useRef(0);
+    const dragging = useRef(false);
+    const localTime = useLocalTime('Asia/Kolkata');
+
+    const paint = useCallback((value: number) => {
+        stageRef.current?.style.setProperty('--split', `${value}%`);
+        const handle = handleRef.current;
+        if (!handle) return;
+        const rounded = Math.round(value);
+        handle.setAttribute('aria-valuenow', String(rounded));
+        handle.setAttribute('aria-valuetext', `${rounded}% design, ${100 - rounded}% build`);
+    }, []);
+
+    const animate = useCallback(() => {
+        if (frame.current) return;
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const tick = () => {
+            const delta = target.current - current.current;
+            current.current = reduce || Math.abs(delta) < 0.05 ? target.current : current.current + delta * 0.14;
+            paint(current.current);
+            frame.current = current.current === target.current ? 0 : requestAnimationFrame(tick);
+        };
+        frame.current = requestAnimationFrame(tick);
+    }, [paint]);
+
+    const moveTo = useCallback(
+        (value: number) => {
+            target.current = Math.min(100, Math.max(0, value));
+            animate();
+        },
+        [animate]
+    );
+
+    useEffect(() => {
+        const introSplit = () => {
+            const stage = stageRef.current;
+            const words = stage?.querySelectorAll<HTMLElement>('[data-word]');
+            if (!stage || !words?.length) return 50;
+            const box = stage.getBoundingClientRect();
+            const rects = [...words].map((el) => el.getBoundingClientRect());
+            const left = Math.min(...rects.map((r) => r.left));
+            const right = Math.max(...rects.map((r) => r.right));
+            return ((left + (right - left) * INTRO_BIAS - box.left) / box.width) * 100;
+        };
+        const intro = window.setTimeout(() => moveTo(introSplit()), 500);
+        return () => {
+            window.clearTimeout(intro);
+            cancelAnimationFrame(frame.current);
+            frame.current = 0;
+        };
+    }, [moveTo]);
+
+    const pointerToSplit = (e: React.PointerEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        moveTo(((e.clientX - rect.left) / rect.width) * 100);
+    };
+
+    const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+        dragging.current = true;
+        e.currentTarget.setPointerCapture(e.pointerId);
+        pointerToSplit(e);
+    };
+
+    const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+        if (dragging.current || e.pointerType === 'mouse') pointerToSplit(e);
+    };
+
+    const onPointerUp = () => {
+        dragging.current = false;
+    };
+
+    const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        const keys: Record<string, number> = {
+            ArrowLeft: target.current - KEY_STEP,
+            ArrowRight: target.current + KEY_STEP,
+            Home: 0,
+            End: 100,
+        };
+        if (!(e.key in keys)) return;
+        e.preventDefault();
+        moveTo(keys[e.key]);
+    };
+
+    const goTo = (href: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        scrollToSection(href);
+    };
+
+    return (
+        <section id="top" aria-labelledby="hero-title" className="relative flex flex-col pt-24 md:pt-28 lg:min-h-[100dvh]">
+            <h1 id="hero-title" className="sr-only">
+                Dipesh Soni, UI/UX designer and frontend developer. I design and build interfaces.
+            </h1>
+
+            <div className="shell">
+                <div className="grid-12 gap-y-3 border-b hairline pb-4 t-label">
+                    <p className="rise col-span-2 md:col-span-3">Dipesh Soni</p>
+                    <p className="rise col-span-2 md:col-span-3" style={{ '--delay': '60ms' } as CSSProperties}>
+                        UI/UX Designer · Frontend Dev
+                    </p>
+                    <p
+                        className="rise col-span-2 hidden md:col-span-3 md:block"
+                        style={{ '--delay': '120ms' } as CSSProperties}
+                    >
+                        Udaipur, IN · {localTime || '—'} IST
+                    </p>
+                    <p
+                        className="rise col-span-2 flex items-center gap-2 text-white md:col-span-3 md:justify-end"
+                        style={{ '--delay': '180ms' } as CSSProperties}
+                    >
+                        <span className="dot-live" />
+                        Open to freelance
+                    </p>
+                </div>
+            </div>
+
+            <div
+                ref={stageRef}
+                className="hero-stage rise mt-6 md:mt-10"
+                style={{ '--delay': '200ms' } as CSSProperties}
+                onPointerDown={onPointerDown}
+                onPointerMove={onPointerMove}
+                onPointerUp={onPointerUp}
+                onPointerCancel={onPointerUp}
+            >
+                <div aria-hidden="true" className="hero-blueprint border-y border-dashed border-accent/20">
+                    <Headline mode="design" />
+                </div>
+                <div
+                    aria-hidden="true"
+                    className="hero-build border-y border-transparent bg-ink bg-[radial-gradient(55%_90%_at_88%_70%,rgba(143,211,255,0.1),transparent_70%)]"
+                >
+                    <Headline mode="build" />
+                </div>
+
+                <div
+                    ref={handleRef}
+                    role="slider"
+                    tabIndex={0}
+                    aria-label="Compare the design file with the built page"
+                    aria-orientation="horizontal"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={100}
+                    onKeyDown={onKeyDown}
+                    className="hero-handle"
+                >
+                    <span className="absolute right-[calc(50%+10px)] top-3 rounded-[var(--r-sm)] bg-raised px-2 py-1 font-mono text-[10px] text-white/70">
+                        Figma
+                    </span>
+                    <span className="absolute left-[calc(50%+10px)] top-3 rounded-[var(--r-sm)] bg-accent px-2 py-1 font-mono text-[10px] font-semibold text-ink">
+                        Code
+                    </span>
+                    <span className="hero-knob">
+                        <ChevronsLeftRight className="h-5 w-5" />
+                    </span>
+                </div>
+            </div>
+
+            <div className="shell mt-auto pt-10 md:pt-12">
+                <div className="grid-12 gap-y-8">
+                    <p
+                        className="rise t-lead col-span-4 md:col-span-6 lg:col-span-5"
+                        style={{ '--delay': '320ms' } as CSSProperties}
+                    >
+                        UI/UX designer at Toba Tech and frontend developer. I take a product from the first wireframe in
+                        Figma to a fast, accessible React build, so nothing gets lost between design and code.
+                    </p>
+                    <div
+                        className="rise col-span-4 flex flex-wrap items-center gap-3 md:col-span-6 md:justify-end md:self-end lg:col-start-7"
+                        style={{ '--delay': '400ms' } as CSSProperties}
+                    >
+                        <a href="#projects" onClick={goTo('#projects')} className="btn btn-primary">
+                            See selected work
+                            <ArrowDown className="h-4 w-4" />
+                        </a>
+                        <a href="#contact" onClick={goTo('#contact')} className="btn btn-ghost">
+                            Start a project
+                            <ArrowRight className="h-4 w-4" />
+                        </a>
+                        <a href={CONTACT_INFO.resume} target="_blank" rel="noopener noreferrer" className="text-link px-2">
+                            <FileText className="h-4 w-4" />
+                            CV
+                        </a>
                     </div>
                 </div>
+
+                <dl className="grid-12 mt-10 border-t hairline md:mt-14">
+                    {FACTS.map((fact, i) => (
+                        <div
+                            key={fact.label}
+                            className={`rise hairline col-span-2 flex flex-col-reverse justify-end gap-1.5 py-5 md:col-span-3 md:py-6 ${
+                                i > 0 ? 'md:border-l md:pl-6' : ''
+                            } ${i % 2 === 1 ? 'border-l pl-4' : ''} ${i >= 2 ? 'border-t md:border-t-0' : ''}`}
+                            style={{ '--delay': `${460 + i * 60}ms` } as CSSProperties}
+                        >
+                            <dt className="text-sm leading-snug text-white/50">{fact.label}</dt>
+                            <dd className="text-3xl font-semibold tabular-nums tracking-[-0.04em] text-white md:text-4xl">
+                                {fact.value}
+                            </dd>
+                        </div>
+                    ))}
+                </dl>
             </div>
         </section>
     );
-};
-
-export default Hero;
-
-
+}

@@ -1,251 +1,231 @@
 'use client';
 
-import { useState, useEffect } from "react";
-import { NAV_LINKS, SOCIAL_LINKS } from '../../data/social';
-import { User, Cpu, Terminal, Mail, ArrowUp } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowRight, FileText, Menu, X } from 'lucide-react';
+import { CONTACT_INFO, NAV_LINKS, SOCIAL_LINKS } from '../../data/social';
+import { scrollToSection } from '../common/SmoothScroll';
+import { useScrolledPast } from '../../hooks/useScrolledPast';
 
-const NAV_ICONS: Record<string, typeof User> = {
-    "#about": User,
-    "#skills": Cpu,
-    "#projects": Terminal,
-    "#contact": Mail,
-};
+const SECTION_IDS = NAV_LINKS.map((link) => link.href.slice(1));
+
+// A section is active once its top crosses 40% of the viewport; the last one wins at the page end.
+function useActiveSection() {
+    const [active, setActive] = useState('');
+
+    useEffect(() => {
+        let frame = 0;
+        const update = () => {
+            frame = 0;
+            const line = window.innerHeight * 0.4;
+            let current = '';
+            for (const id of SECTION_IDS) {
+                const el = document.getElementById(id);
+                if (el && el.getBoundingClientRect().top <= line) current = id;
+            }
+            const atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+            setActive(atEnd ? SECTION_IDS[SECTION_IDS.length - 1] : current);
+        };
+        const schedule = () => {
+            if (!frame) frame = requestAnimationFrame(update);
+        };
+
+        schedule();
+        window.addEventListener('scroll', schedule, { passive: true });
+        window.addEventListener('resize', schedule);
+        return () => {
+            cancelAnimationFrame(frame);
+            window.removeEventListener('scroll', schedule);
+            window.removeEventListener('resize', schedule);
+        };
+    }, []);
+
+    return active;
+}
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
-    const [activeSection, setActiveSection] = useState("");
+    const activeSection = useActiveSection();
+    const isScrolled = useScrolledPast(24);
+    const navRef = useRef<HTMLElement>(null);
+    const pillRef = useRef<HTMLSpanElement>(null);
 
     useEffect(() => {
-        const observerOptions = {
-            root: null,
-            rootMargin: "-20% 0px -80% 0px",
-            threshold: 0,
+        const nav = navRef.current;
+        const pill = pillRef.current;
+        if (!nav || !pill) return;
+        const place = () => {
+            const link = nav.querySelector<HTMLElement>(`[data-section="${activeSection}"]`);
+            pill.style.opacity = link ? '1' : '0';
+            if (!link) return;
+            pill.style.transform = `translateX(${link.offsetLeft}px)`;
+            pill.style.width = `${link.offsetWidth}px`;
         };
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    setActiveSection(entry.target.id);
-                }
-            });
-        }, observerOptions);
-        NAV_LINKS.forEach((link) => {
-            const element = document.querySelector(link.href);
-            if (element) observer.observe(element);
-        });
+        place();
+        const observer = new ResizeObserver(place);
+        observer.observe(nav);
         return () => observer.disconnect();
-    }, []);
+    }, [activeSection]);
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? 'hidden' : '';
-        return () => { document.body.style.overflow = ''; };
+        return () => {
+            document.body.style.overflow = '';
+        };
     }, [isOpen]);
 
-    const handleNavClick = (
-        e: React.MouseEvent<HTMLAnchorElement>,
-        href: string
-    ) => {
+    const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
         e.preventDefault();
         setIsOpen(false);
-        if (href === "#") {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            return;
-        }
-        const element = document.querySelector(href);
-        if (element) {
-            const isDesktop = window.innerWidth >= 1024;
-            const headerOffset = isDesktop ? 20 : 80;
-            const elementPosition = element.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.scrollY - headerOffset;
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: "smooth",
-            });
-        }
+        scrollToSection(href);
     };
 
     return (
         <>
-            {/* Desktop Left Floating Navigation Dock */}
-            <aside
-                className="hidden lg:flex fixed left-6 top-1/2 -translate-y-1/2 z-50 w-44 flex-col items-center gap-3 p-3 rounded-3xl bg-black/80 backdrop-blur-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
-            >
-                {/* Logo Top Icon */}
-                <a
-                    href="#"
-                    onClick={(e) => handleNavClick(e, "#")}
-                    className="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition-all duration-300 group"
-                    title="Dipesh Soni - Scroll to Top"
-                >
-                    <img
-                        src="/logo_header.svg"
-                        alt="Logo"
-                        className="w-5 h-5 object-contain brightness-0 invert group-hover:rotate-[15deg] group-hover:scale-110 transition-all duration-500"
-                    />
-                </a>
-
-                <div className="w-full h-px bg-white/10" />
-
-                {/* Vertical Navigation Links */}
-                <nav className="flex flex-col gap-1.5 w-full">
-                    {NAV_LINKS.map((link) => {
-                        const isActive = activeSection === link.href.substring(1);
-                        const IconComp = NAV_ICONS[link.href] || User;
-                        return (
-                            <a
-                                key={link.href}
-                                href={link.href}
-                                onClick={(e) => handleNavClick(e, link.href)}
-                                className={`group relative flex items-center justify-between w-full px-3.5 py-3 rounded-2xl transition-all duration-300 ${isActive
-                                        ? "bg-white/10 text-white border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
-                                        : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
-                                    }`}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <IconComp className={`w-4 h-4 shrink-0 transition-transform duration-300 group-hover:scale-110 ${isActive ? "text-violet-400" : "text-gray-400 group-hover:text-white"
-                                        }`} />
-                                    <span className="text-xs font-semibold tracking-wide">
-                                        {link.label}
-                                    </span>
-                                </div>
-                                <span className={`w-1.5 h-1.5 rounded-full bg-violet-400 shadow-[0_0_8px_rgba(139,92,246,0.8)] transition-opacity duration-300 ${isActive ? "opacity-100" : "opacity-0"
-                                    }`} />
-                            </a>
-                        );
-                    })}
-                </nav>
-
-                <div className="w-full h-px bg-white/10" />
-
-                {/* Scroll to Top Button */}
-                <a
-                    href="#"
-                    onClick={(e) => handleNavClick(e, "#")}
-                    className="w-full h-9 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300"
-                    title="Back to Top"
-                >
-                    <ArrowUp className="w-4 h-4" />
-                </a>
-            </aside>
-
-            {/* Mobile Top Header Bar */}
-            <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10 px-4 py-3 flex items-center justify-between">
-                <a
-                    href="#"
-                    onClick={(e) => handleNavClick(e, "#")}
-                    className="flex items-center gap-2.5 group"
-                >
-                    <img
-                        src="/logo_header.svg"
-                        alt="Logo"
-                        className="w-7 h-7 object-contain brightness-0 invert"
-                    />
-                    <span
-                        className="text-base font-bold tracking-tight text-white gradient-text-soft font-display"
+            <header className="fixed inset-x-0 top-0 z-50 pt-3">
+                <div className="shell">
+                    <div
+                        className={`flex h-16 items-center justify-between rounded-[18px] border border-white/12 bg-ink/80 px-2 backdrop-blur-xl transition-shadow duration-500 ${
+                            isScrolled || isOpen ? 'shadow-[0_12px_40px_-12px_rgba(0,0,0,0.9)]' : ''
+                        }`}
                     >
-                        Dipesh Soni
-                    </span>
-                </a>
+                        <a
+                            href="#top"
+                            onClick={(e) => handleNavClick(e, '#top')}
+                            className="group flex items-center gap-3 rounded-[var(--r-btn)] pr-3"
+                            aria-label="Dipesh Soni, back to top"
+                        >
+                            <span className="grid h-11 w-11 place-items-center rounded-[var(--r-btn)] bg-accent font-mono text-xs font-bold text-ink transition-transform duration-500 group-hover:rotate-[-8deg]">
+                                DS
+                            </span>
+                            <span className="flex flex-col leading-none">
+                                <span className="text-[15px] font-semibold tracking-tight text-white">Dipesh Soni</span>
+                                <span className="mt-1 hidden font-mono text-[10px] uppercase tracking-[0.12em] text-white/45 lg:block">
+                                    Design &amp; Frontend
+                                </span>
+                            </span>
+                        </a>
 
-                <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="w-10 h-10 rounded-xl text-white hover:bg-white/10 transition-all duration-300 flex items-center justify-center"
-                    aria-label="Toggle menu"
-                    aria-expanded={isOpen}
-                >
-                    <div className="flex flex-col justify-between w-5 h-4 relative">
-                        <span className={`w-full h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out transform ${isOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
-                        <span className={`w-full h-[2px] bg-white rounded-full transition-all duration-200 ease-in-out ${isOpen ? "opacity-0 scale-x-0" : "opacity-100"}`} />
-                        <span className={`w-full h-[2px] bg-white rounded-full transition-all duration-300 ease-in-out transform ${isOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+                        <nav
+                            ref={navRef}
+                            className="relative hidden items-center rounded-[14px] border border-white/10 bg-white/[0.03] p-1 md:flex"
+                            aria-label="Primary"
+                        >
+                            <span
+                                ref={pillRef}
+                                aria-hidden="true"
+                                className="absolute left-0 top-1 h-10 rounded-[var(--r-btn)] bg-white opacity-0 transition-[transform,width,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                            />
+                            {NAV_LINKS.map((link) => {
+                                const id = link.href.slice(1);
+                                const isActive = activeSection === id;
+                                return (
+                                    <a
+                                        key={link.href}
+                                        href={link.href}
+                                        data-section={id}
+                                        onClick={(e) => handleNavClick(e, link.href)}
+                                        aria-current={isActive ? 'location' : undefined}
+                                        className={`relative z-10 flex h-10 items-center rounded-[var(--r-btn)] px-4 text-sm font-medium transition-colors duration-300 lg:px-5 ${
+                                            isActive ? 'text-ink' : 'text-white/70 hover:text-white'
+                                        }`}
+                                    >
+                                        {link.label}
+                                    </a>
+                                );
+                            })}
+                        </nav>
+
+                        <div className="flex items-center gap-1.5">
+                            <a
+                                href={CONTACT_INFO.resume}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hidden h-11 items-center gap-1.5 rounded-[var(--r-btn)] px-4 text-sm font-medium text-white/70 transition-colors hover:text-white lg:inline-flex"
+                            >
+                                <FileText className="h-4 w-4" />
+                                CV
+                            </a>
+                            <a
+                                href="#contact"
+                                onClick={(e) => handleNavClick(e, '#contact')}
+                                className="btn btn-primary hidden h-11 px-5 sm:inline-flex"
+                            >
+                                Let&apos;s talk
+                                <ArrowRight className="h-4 w-4" />
+                            </a>
+                            <button
+                                onClick={() => setIsOpen(!isOpen)}
+                                className="grid h-11 w-11 place-items-center rounded-[var(--r-btn)] border border-white/12 text-white transition-colors hover:border-white/30 md:hidden"
+                                aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                                aria-expanded={isOpen}
+                            >
+                                {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                            </button>
+                        </div>
                     </div>
-                </button>
+                </div>
             </header>
 
-            {/* Mobile Menu Backdrop */}
-            <div
-                className={`lg:hidden fixed inset-0 bg-black/80 backdrop-blur-md z-40 transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-                onClick={() => setIsOpen(false)}
-            />
-
-            {/* Mobile Navigation Drawer */}
-            <div
-                className={`lg:hidden fixed inset-0 z-40 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 -translate-y-8 pointer-events-none"
-                    }`}
-            >
-                <div className="bg-gradient-to-b from-black via-neutral-950 to-black h-full flex flex-col pt-24 pb-10 px-8">
-                    <nav className="flex flex-col gap-1">
-                        {NAV_LINKS.map((link, index) => {
-                            const isActive = activeSection === link.href.substring(1);
-                            const sectionNum = String(index + 1).padStart(2, '0');
+            {isOpen && (
+                <div className="fixed inset-0 z-40 flex flex-col justify-between bg-ink px-[var(--pad-x)] pb-10 pt-28 md:hidden">
+                    <nav className="flex flex-col border-t hairline" aria-label="Mobile">
+                        {NAV_LINKS.map((link, i) => {
+                            const isActive = activeSection === link.href.slice(1);
                             return (
                                 <a
                                     key={link.href}
                                     href={link.href}
                                     onClick={(e) => handleNavClick(e, link.href)}
-                                    className="group relative block py-5 transition-all duration-500"
-                                    style={{
-                                        transitionDelay: isOpen ? `${100 + index * 70}ms` : '0ms',
-                                        opacity: isOpen ? 1 : 0,
-                                        transform: isOpen ? 'translateY(0)' : 'translateY(20px)',
-                                    }}
+                                    aria-current={isActive ? 'location' : undefined}
+                                    className="rise flex items-center justify-between border-b hairline py-5"
+                                    style={{ '--delay': `${i * 50}ms` } as React.CSSProperties}
                                 >
-                                    <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-full transition-all duration-300 ${isActive
-                                        ? "h-8 bg-white shadow-[0_0_12px_rgba(255,255,255,0.5)]"
-                                        : "h-0 bg-white/40 group-hover:h-5"
-                                        }`} />
-                                    <div className="flex items-baseline gap-4 pl-5">
-                                        <span className={`text-[11px] font-mono tracking-widest transition-colors duration-300 ${isActive ? "text-violet-400" : "text-neutral-600 group-hover:text-neutral-400"}`}>
-                                            {sectionNum}
-                                        </span>
-                                        <span
-                                            className={`text-4xl font-bold tracking-tight transition-all duration-300 ${isActive
-                                                ? "text-white"
-                                                : "text-neutral-500 group-hover:text-white group-hover:translate-x-2"
-                                                }`}
-                                        >
-                                            {link.label}
-                                        </span>
-                                    </div>
-                                    <span className="absolute bottom-0 left-5 right-5 h-px bg-white/[0.06]" />
+                                    <span
+                                        className={`text-4xl font-semibold tracking-[-0.04em] ${isActive ? 'text-accent' : 'text-white'}`}
+                                    >
+                                        {link.label}
+                                    </span>
+                                    <ArrowRight className={`h-5 w-5 ${isActive ? 'text-accent' : 'text-white/30'}`} />
                                 </a>
                             );
                         })}
                     </nav>
 
-                    <div
-                        className="mt-auto px-5 transition-all duration-500"
-                        style={{
-                            transitionDelay: isOpen ? `${200 + NAV_LINKS.length * 70}ms` : '0ms',
-                            opacity: isOpen ? 1 : 0,
-                        }}
-                    >
-                        <div className="flex items-center justify-center gap-4 mb-6">
-                            {SOCIAL_LINKS.map((social) => {
-                                const Icon = social.icon;
-                                return (
-                                    <a
-                                        key={social.label}
-                                        href={social.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-label={social.label}
-                                        className="w-10 h-10 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-gray-300 hover:text-white hover:bg-white/10 transition-all"
-                                    >
-                                        <Icon className="w-5 h-5" />
-                                    </a>
-                                );
-                            })}
-                        </div>
-                        <div className="flex items-center gap-3 text-neutral-600 text-[10px] tracking-[0.3em] uppercase font-mono">
-                            <span className="h-px flex-1 bg-white/[0.06]" />
-                            Portfolio &copy; {new Date().getFullYear()}
-                            <span className="h-px flex-1 bg-white/[0.06]" />
+                    <div className="space-y-5 pt-8">
+                        <a
+                            href="#contact"
+                            onClick={(e) => handleNavClick(e, '#contact')}
+                            className="btn btn-primary w-full"
+                        >
+                            Let&apos;s talk
+                            <ArrowRight className="h-4 w-4" />
+                        </a>
+                        <div className="flex items-center justify-between">
+                            <a href={CONTACT_INFO.resume} target="_blank" rel="noopener noreferrer" className="text-link">
+                                <FileText className="h-4 w-4" />
+                                Download CV
+                            </a>
+                            <div className="flex items-center gap-2">
+                                {SOCIAL_LINKS.map((social) => {
+                                    const Icon = social.icon;
+                                    return (
+                                        <a
+                                            key={social.label}
+                                            href={social.href}
+                                            target={social.href.startsWith('http') ? '_blank' : undefined}
+                                            rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                                            aria-label={social.label}
+                                            className="grid h-11 w-11 place-items-center rounded-[var(--r-btn)] border hairline text-white/60 transition-colors hover:border-accent/50 hover:text-accent"
+                                        >
+                                            <Icon className="h-4 w-4" />
+                                        </a>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            )}
         </>
     );
 }
-

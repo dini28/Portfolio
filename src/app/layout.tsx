@@ -1,50 +1,53 @@
 import type { Metadata, Viewport } from 'next';
-import { Genos, Offside } from 'next/font/google';
+import { Geist_Mono, Silkscreen } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
 import './globals.css';
 
-const genos = Genos({
+const geistMono = Geist_Mono({
   subsets: ['latin'],
-  variable: '--font-genos',
+  variable: '--font-geist-mono',
   display: 'swap',
 });
 
-const offside = Offside({
-  weight: '400',
+const silkscreen = Silkscreen({
   subsets: ['latin'],
-  variable: '--font-offside',
+  variable: '--font-pixel',
   display: 'swap',
+  weight: ['400', '700'],
+  preload: false,
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://dipeshsoni.vercel.app'),
-  title: 'Dipesh Soni | Frontend Developer',
+  title: 'Dipesh Soni — UI/UX Designer & Frontend Developer',
   description:
-    'Dipesh Soni — Frontend Developer specializing in React, TypeScript, and modern web technologies. View my projects, skills, and get in touch.',
+    'UI/UX Designer at Toba Tech and frontend developer working with Figma, React, Next.js and Tailwind CSS. B.Tech Computer Science, Udaipur.',
   authors: [{ name: 'Dipesh Soni' }],
   keywords: [
     'Dipesh Soni',
     'Frontend Developer',
+    'UI/UX Designer',
     'React',
     'TypeScript',
+    'Next.js',
     'Portfolio',
-    'Web Developer',
+    'Tailwind CSS',
   ],
   openGraph: {
     type: 'website',
-    title: 'Dipesh Soni | Frontend Developer',
+    title: 'Dipesh Soni — UI/UX Designer & Frontend Developer',
     description:
-      'Frontend Developer specializing in React, TypeScript, and modern web technologies. View my projects, skills, and get in touch.',
-    images: ['/preview.png'],
+      'UI/UX Designer at Toba Tech and frontend developer working with Figma, React, Next.js and Tailwind CSS.',
+    images: [{ url: '/preview.jpg', width: 1200, height: 630 }],
     siteName: 'Dipesh Soni Portfolio',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Dipesh Soni | Frontend Developer',
+    title: 'Dipesh Soni — UI/UX Designer & Frontend Developer',
     description:
-      'Frontend Developer specializing in React, TypeScript, and modern web technologies.',
-    images: ['/preview.png'],
+      'UI/UX Designer at Toba Tech and frontend developer working with Figma, React, Next.js and Tailwind CSS.',
+    images: ['/preview.jpg'],
   },
   icons: {
     icon: '/favicon.svg',
@@ -52,7 +55,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#060606',
+  themeColor: '#000000',
   width: 'device-width',
   initialScale: 1,
 };
@@ -63,8 +66,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${genos.variable} ${offside.variable}`}>
-      <body className={genos.className}>
+    <html
+      lang="en"
+      className={`${geistMono.variable} ${silkscreen.variable} dark`}
+    >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* eslint-disable-next-line @next/next/no-page-custom-font -- the root layout covers every route; Geom is not in next/font, and an @import in globals.css lands after next/font's @font-face rules, which voids it. */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Genos:ital,wght@0,100..900;1,100..900&family=Geom:ital,wght@0,300..900;1,300..900&display=swap"
+        />
+      </head>
+      <body className="font-sans bg-ink text-white antialiased">
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
