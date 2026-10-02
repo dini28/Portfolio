@@ -477,7 +477,7 @@ html[data-inspect="on"] * {
 
 /* ─── Hero: design ⇄ build split ─── */
 .hero-stage {
-    --split: 100%;
+    --split: 47%;
     position: relative;
     touch-action: pan-y;
     user-select: none;
@@ -528,21 +528,21 @@ html[data-inspect="on"] * {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 2.75rem;
-    height: 2.75rem;
+    width: 2.5rem;
+    height: 2.5rem;
     transform: translate(-50%, -50%);
     display: grid;
     place-items: center;
     border-radius: var(--r-btn);
     background: var(--color-accent);
     color: var(--color-ink);
-    box-shadow: 0 0 0 6px rgba(143, 211, 255, 0.14);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35), 0 0 0 5px rgba(143, 211, 255, 0.16), 0 8px 24px rgba(0, 0, 0, 0.45);
     transition: box-shadow 0.3s var(--ease-out), transform 0.3s var(--ease-out);
 }
 
 .hero-handle:hover .hero-knob,
 .hero-handle:focus-visible .hero-knob {
-    box-shadow: 0 0 0 10px rgba(143, 211, 255, 0.18);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5), 0 0 0 8px rgba(143, 211, 255, 0.22), 0 12px 28px rgba(0, 0, 0, 0.55);
 }
 
 .hero-handle:focus-visible {
@@ -708,3 +708,12 @@ html[data-inspect="on"] * {
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(143, 211, 255, 0.5);
 }
+
+
+
+
+
+
+
+
+

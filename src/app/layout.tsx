@@ -20,7 +20,7 @@ const silkscreen = Silkscreen({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://dipeshsoni.vercel.app'),
-  title: 'Dipesh Soni — UI/UX Designer & Frontend Developer',
+  title: 'Dipesh Soni | UI/UX Designer & Frontend Developer',
   description:
     'UI/UX Designer at Toba Tech and frontend developer working with Figma, React, Next.js and Tailwind CSS. B.Tech Computer Science, Udaipur.',
   authors: [{ name: 'Dipesh Soni' }],
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     type: 'website',
-    title: 'Dipesh Soni — UI/UX Designer & Frontend Developer',
+    title: 'Dipesh Soni | UI/UX Designer & Frontend Developer',
     description:
       'UI/UX Designer at Toba Tech and frontend developer working with Figma, React, Next.js and Tailwind CSS.',
     images: [{ url: '/preview.jpg', width: 1200, height: 630 }],
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Dipesh Soni — UI/UX Designer & Frontend Developer',
+    title: 'Dipesh Soni | UI/UX Designer & Frontend Developer',
     description:
       'UI/UX Designer at Toba Tech and frontend developer working with Figma, React, Next.js and Tailwind CSS.',
     images: ['/preview.jpg'],

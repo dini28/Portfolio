@@ -84,9 +84,8 @@ export default function Header() {
             <header className="fixed inset-x-0 top-0 z-50 pt-3">
                 <div className="shell">
                     <div
-                        className={`flex h-16 items-center justify-between rounded-[18px] border border-white/12 bg-ink/80 px-2 backdrop-blur-xl transition-shadow duration-500 ${
-                            isScrolled || isOpen ? 'shadow-[0_12px_40px_-12px_rgba(0,0,0,0.9)]' : ''
-                        }`}
+                        className={`flex h-16 items-center justify-between rounded-[18px] border border-white/12 bg-ink/80 px-2 backdrop-blur-xl transition-shadow duration-500 ${isScrolled || isOpen ? 'shadow-[0_12px_40px_-12px_rgba(0,0,0,0.9)]' : ''
+                            }`}
                     >
                         <a
                             href="#top"
@@ -94,9 +93,6 @@ export default function Header() {
                             className="group flex items-center gap-3 rounded-[var(--r-btn)] pr-3"
                             aria-label="Dipesh Soni, back to top"
                         >
-                            <span className="grid h-11 w-11 place-items-center rounded-[var(--r-btn)] bg-accent font-mono text-xs font-bold text-ink transition-transform duration-500 group-hover:rotate-[-8deg]">
-                                DS
-                            </span>
                             <span className="flex flex-col leading-none">
                                 <span className="text-[15px] font-semibold tracking-tight text-white">Dipesh Soni</span>
                                 <span className="mt-1 hidden font-mono text-[10px] uppercase tracking-[0.12em] text-white/45 lg:block">
@@ -125,9 +121,8 @@ export default function Header() {
                                         data-section={id}
                                         onClick={(e) => handleNavClick(e, link.href)}
                                         aria-current={isActive ? 'location' : undefined}
-                                        className={`relative z-10 flex h-10 items-center rounded-[var(--r-btn)] px-4 text-sm font-medium transition-colors duration-300 lg:px-5 ${
-                                            isActive ? 'text-ink' : 'text-white/70 hover:text-white'
-                                        }`}
+                                        className={`relative z-10 flex h-10 items-center rounded-[var(--r-btn)] px-4 text-sm font-medium transition-colors duration-300 lg:px-5 ${isActive ? 'text-ink' : 'text-white/70 hover:text-white'
+                                            }`}
                                     >
                                         {link.label}
                                     </a>
